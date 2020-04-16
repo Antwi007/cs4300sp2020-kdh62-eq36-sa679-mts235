@@ -27,8 +27,6 @@ def search():
         category_name = query
         output = processing_data(query_val, category_name)
         data = output
-        # print(nutrients_data[2])
-        # data = range(5)
 
     return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
 
