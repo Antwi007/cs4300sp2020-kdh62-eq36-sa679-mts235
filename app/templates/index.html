@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="topcorner">
+            <p>Project Name: {{ name }}</p>
+            <p>Student Name: ({{ netid }})</p>
+        </div>
+        <div id="content">
+            <div class="row">
+                <div id="leftside" class="col">
+                    <div>
+                        <img id="headimage" src="images/nutrients.jpg">
+                        <!-- Source: Healthline https://images-prod.healthline.com/hlcmsresource/images/topic_centers/Food-Nutrition/1296x728_6_Essential_Nutrients_and_Why_Your_Body_Needs_Them-Carbs.jpg-->
+                        <p id="searchparagraph">I'm looking for...</p>
+                        <div id="searchbox">
+                            <input id="searchbar" type="text" placeholder="Search Nutrient">
+                            <button id="searchbutton" type="button">Search</button>
+                        </div>
+                    </div>
+                    <div id="grocerysection">
+                        <h2>Your Shopping Cart</h2>
+                        <ul id="shoppinglist">
+                            <li class="shoppingitem">This</li>
+                            <li class="shoppingitem">Is</li>
+                            <li class="shoppingitem">Where</li>
+                            <li class="shoppingitem">Items</li>
+                            <li class="shoppingitem">Will</li>
+                            <li class="shoppingitem">Go</li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="rightside" class="col">
+                    <div id="resultssection">
+                        <h2>Search Results</h2>
+                        <ul id="resultslist">
+                            <li class="resultsitem">This</li>
+                            <li class="resultsitem">Is</li>
+                            <li class="resultsitem">Where</li>
+                            <li class="resultsitem">Results</li>
+                            <li class="resultsitem">Will</li>
+                            <li class="resultsitem">Go</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

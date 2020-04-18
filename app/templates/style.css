@@ -1,0 +1,95 @@
+/* Top/General */
+
+    html {
+        font-family: arial;
+    }
+
+    .row {
+        display: flex;
+    }
+    
+    .col {
+        flex: 50%;
+        margin: 10px;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #dddddd;
+    }
+
+    #content {
+        max-width: 1280px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin: 12px 0 12px 0;
+    }
+
+/* Header Image */
+
+    #headimage {
+        width: 100%;
+        margin-bottom: 16px;
+    }
+
+/* Search */
+
+    #searchparagraph {
+        margin: 0 0 0 12px;
+    }
+
+    #searchbox {
+        display: flex;
+    }
+
+    #searchbar {
+        flex: 75%;
+        margin: 10px;
+    }
+
+    #searchbutton {
+        flex: 25%;
+        margin-left: 10px;
+        margin: 10px;
+        height: 30px;
+        background-color: #1ee49d;
+        color: #ffffff;
+        border-width: 0;
+        border-radius: 5px;
+    }
+
+/* Shopping List */
+
+    #groceryselection {
+        width: 100%;
+    }
+
+    #shoppinglist {
+        background-color: #eeeeee;
+        list-style-type: none;
+    }
+
+    .shoppingitem {
+        height: 40px;
+        display: flex;
+        align-items: center;
+    }
+
+/* Selection List */
+
+    #resultsselection {
+        width: 100%;
+    }
+
+    #resultslist {
+        background-color: #eeeeee;
+        list-style-type: none;
+    }
+
+    .resultsitem {
+        height: 40px;
+        display: flex;
+        align-items: center;
+    }
