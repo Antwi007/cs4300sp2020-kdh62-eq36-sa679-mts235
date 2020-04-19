@@ -344,7 +344,9 @@
       <br />
       <p>Food Group: {{d["FoodGroup"]}}</p>
       <br /><br />
-      {% endfor %} {% endif %}
+      {% endfor %} {% endif %} {% if data==[] %}
+      <h1>There were no results for your search</h1>
+      {% endif %}
     </form>
     <!-- <p>Categories: ({{ fin }})</p> -->
     <script>
