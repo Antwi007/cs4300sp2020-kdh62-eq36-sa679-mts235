@@ -59,6 +59,8 @@ def processing_data(query_nutrients, category_name):
     return output
 
 def category_filtering(query_categories):
+    f = open('nutrients.json',)
+    nutrients_data = json.load(f)
     #separate between input to get list
     cat_list=query_categories.split(",")
     #use edit distance to find actual cats from input
@@ -66,9 +68,16 @@ def category_filtering(query_categories):
     for nutrient in cat_list:
         valid_nutrient=edit_distance_search(nutrient,['Vegetables and Vegetable Products', 'Soups, Sauces, and Gravies', 'Baby Foods', 'Fruits and Fruit Juices', 'American Indian/Alaska Native Foods', 'Finfish and Shellfish Products', 'Sweets', 'Beverages', 'Snacks', 'Nut and Seed Products', 'Beef Products', 'Fats and Oils', 'Restaurant Foods', 'Lamb, Veal, and Game Products', 'Dairy and Egg Products', 'Legumes and Legume Products', 'Poultry Products', 'Fast Foods', 'Meals, Entrees, and Side Dishes', 'Spices and Herbs', 'Baked Products', 'Sausages and Luncheon Meats', 'Breakfast Cereals', 'Cereal Grains and Pasta', 'Pork Products']
 )
-        output.append(valid_nutrient)
+        output.append(valid_nutrient[1])
 
-    return output
+    #use final cats to find food items
+    food_output=[]
+    for food in nutrients_data:
+        if food['FoodGroup'] in output:
+            #food id is put into a list: food_output
+            food_output.append(food["ID"])
+
+    return food_output
 
 
 
