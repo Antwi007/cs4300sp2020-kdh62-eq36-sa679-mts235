@@ -80,7 +80,12 @@
       <h1>{{output_message}}</h1>
       {% for d in data %}
       <br />
-      <p>{{d}}</p>
+      <p>Name: {{d["ShortDescrip"]}}</p>
+      <br />
+      <p>Description: {{d["Descrip"]}}</p>
+      <br />
+      <p>Food Group: {{d["FoodGroup"]}}</p>
+      <br />
       {% endfor %} {% endif %}
     </form>
   </body>
