@@ -22,7 +22,7 @@ def search():
     # final = category_filtering(str(cat_list))
 
     # if anthing is blank do nothing else put nutrients into list and pass category name with it to processing _data function
-    if not query_desc or not nutr_list or not cat_list:
+    if not query_desc and not nutr_list and not cat_list:
         print("HERE 1")
         data = []
         output_message = ''
@@ -34,11 +34,20 @@ def search():
         output_message = "Your search: " + query_desc
         final = category_filtering(cat_list)
         # category_name = query
-        category_list = category_filtering(str(cat_list))
-        # print("Category List is: " + str(category_list))
-        nutr_list = nutrients_filtering(category_list, nutr_val)
-        # print("Nutrient List is: " + str(nutr_list))
-        desc_list = descrip_filtering(query_desc, nutr_list)
+        if cat_list:
+            category_list = category_filtering(str(cat_list))
+        else:
+            category_list = json.load(open('nutrients.json',))
+        if nutr_val:
+            # print("Category List is: " + str(category_list))
+            nutr_list = nutrients_filtering(category_list, nutr_val)
+        else:
+            nutr_list = category_list
+        if query_desc:
+            # print("Nutrient List is: " + str(nutr_list))
+            desc_list = descrip_filtering(query_desc, nutr_list)
+        else:
+            desc_list = nutr_list
         # print("Description List is: " + str(desc_list))
         # output
         # for desc in desc_list:
