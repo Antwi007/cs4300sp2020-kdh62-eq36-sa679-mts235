@@ -16,7 +16,7 @@
                         <p id="searchparagraph">I'm looking for...</p>
                         <div id="searchbox">
                             <input id="searchbar" type="text" placeholder="Search Nutrient">
-                            <button id="searchbutton" type="button">Search</button>
+                            <button id="searchbutton" onclick="getSearch()" type="button">Search</button>
                         </div>
                     </div>
                     <div id="grocerysection">
@@ -35,18 +35,30 @@
                     <div id="resultssection">
                         <h2>Search Results</h2>
                         <ul id="resultslist">
-                            <li class="resultsitem">This</li>
-                            <li class="resultsitem">Is</li>
-                            <li class="resultsitem">Where</li>
-                            <li class="resultsitem">Results</li>
-                            <li class="resultsitem">Will</li>
-                            <li class="resultsitem">Go</li>
+                            <!-- There is a better way to do this but I've forgotten 2300, maybe someone else remembers? -->
+                            <li id="resultsitem0" class="resultsitem">This</li>
+                            <li id="resultsitem1" class="resultsitem">Is</li>
+                            <li id="resultsitem2" class="resultsitem">Where</li>
+                            <li id="resultsitem3" class="resultsitem">Results</li>
+                            <li id="resultsitem4" class="resultsitem">Will</li>
+                            <li id="resultsitem5" class="resultsitem">Go</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
         <script>
+
+            function getSearch(){
+                var searchVal = document.getElementById("searchbar").value;
+                
+                //do all our fancy database stuff here
+
+                for (i = 0; i<10; i++) {
+                        document.getElementById("resultsitem" + i).innerHTML = "result " + searchVal + " " + i;
+                }
+            }
+
             function autocomplete(inp, arr) {
               /*the autocomplete function takes two arguments,
               the text field element and an array of possible autocompleted values:*/
