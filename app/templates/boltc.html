@@ -1,0 +1,197 @@
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="/static/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/main.css" />
+
+    <!-- Bootstrap -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <!-- Select2 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+    <style>
+      .gradienttext {
+        /* font-size: 72px; */
+        background: -webkit-linear-gradient(#FBAE57, #DA554B, #614FAB);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      body{
+        background-image: linear-gradient(#FBAE57, #DA554B, #614FAB, white, white);
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="container ">
+      <div class="topcorner">
+        <p>Project Name: {{ name }}</p>
+        <p>Student Name: ({{ netid }})</p>
+      </div>
+      <img src="{{url_for('static', filename='grocery_image.png')}}"  class="img-fluid rounded mx-auto d-block pl-4" alt="..." style="max-height:200px;">
+      <h1
+        style="font-size: 55px; font-family: Futura; color: #4285f4;"
+        class="text-center text-white"
+      >
+      Bolt Cart
+        <!-- <span style="color: #ea4335;">B</span>
+        <span style="color: #ea4335;">O</span>
+        <span style="color: #34a853;">L</span>
+        <span style="color: #ea4335;">T</span> -->
+      </h1>
+
+      <br /><br />
+      <form  action="#" >
+        <div class="form-group row">
+          <div class="col-3">
+            <h1 class="text-right text-white">Description</h4>
+          </div>
+          <div class="col-8">
+            <input
+              class="form-control form-control-lg p-3"
+              name="search"
+              placeholder="Food Description ie. chips, sour, salty"
+              style = "font-size: 12px;"
+            />
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-3">
+            <h1 class="text-right text-white">Nutrients</h4>
+          </div>
+          <div class="col-8">
+            <select class="form-control tokenizer" name = "nutrients" multiple="multiple" placeholder = "Input the Nutrients you desire">
+              {% if nutr_list %} {% for nutr in nutr_list %}
+              <option  value="{{ nutr[1] }}" >{{ nutr[0] }}</option> 
+
+              {% endfor %} {% endif %}
+
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-3">
+            <h1 class="text-right text-white">Category</h4>
+          </div>
+          <div class="col-8">
+            <select class="form-control tokenizer2" name = "cat_search" multiple="multiple" placeholder = "Input the Nutrients you desire">
+              {% if cat_list %} {% for cat in cat_list %}
+
+              <option  value="{{ cat }}" class="bg-danger">{{ cat }}</option> 
+
+              {% endfor %} {% endif %}
+
+            </select>
+          </div>
+        </div>
+        <script>
+
+        $('select').select2({
+          createTag: function (params) {
+            // Don't offset to create a tag if there is no @ symbol
+            if (params.term.indexOf('@') === -1) {
+              // Return null to disable tag creation
+              return null;
+            }
+
+            return {
+              id: params.term,
+              text: params.term,
+
+            }
+          }
+        });
+
+        $(".tokenizer").select2({
+            tags: true,
+            tokenSeparators: [',', ' '],
+            placeholder: "Nutrients ie. Protein, Calcium",
+              allowClear: true
+        })
+
+        $(".tokenizer2").select2({
+            tags: true,
+            tokenSeparators: [',', ' '],
+            placeholder: "Categories ie. Dairy, Sweets",
+              allowClear: true
+        })
+
+
+
+      </script>
+        <div class="container ">
+          <br><br><br>
+          <button type="submit" style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB);" class="btn btn-lg btn-block text-white " style="border-color:transparent;">Go</button>
+        </div>
+
+        <!-- <button type="submit" class="btn btn-info">Go!</button> -->
+      </form>
+
+      <br />
+      <br />
+
+
+      <br />
+      <br />
+
+      
+        {% if data %}
+        <h1 class="text-center">{{output_message}}</h1><br><br>
+        <div class="row">
+          <div class="card-deck">
+            
+             <!-- <div class="card-columns"> -->
+          {% for d in data %}
+          
+
+          <div class="col-4 mb-4">
+            <div class="container ">
+              <div class="card">
+                <img src="{{url_for('static', filename='nutrients.jpg')}}"  class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h1 class="card-title"> {{d["Descrip"]}} </h1>
+                  <h4 class="card-text">{{d["FoodGroup"]}} </h4>
+                </div>
+              </div>
+          </div>
+        </div>
+
+        {% endfor %}
+        </div>
+      </div>
+       {% endif %} {% if data==[] %}
+        <h1 class="text-center">There were no results for your search</h1>
+        {% endif %}
+    </div>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

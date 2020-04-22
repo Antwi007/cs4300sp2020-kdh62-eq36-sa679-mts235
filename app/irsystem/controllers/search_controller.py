@@ -12,13 +12,40 @@ net_id = "Nana Antwi: nka32, Max Stallop: mls235, Edwin Quaye: eq36, Stephen Adu
 # nutrients_data = json.load(f)
 
 
+def categ_list():
+    f = open('nutrients.json',)
+    nutrients_data = json.load(f)
+    cat_list = []
+    for item in nutrients_data:
+        food_group = item["FoodGroup"]
+        if food_group not in cat_list:
+            cat_list.append(food_group)
+    f.close()
+    return cat_list
+
+
+def list_nutrients():
+    f = open('nutrients.json',)
+    nutrients_data = json.load(f)
+    final_list = []
+    non_nutrients = ["ID", "FoodGroup", "ShortDescrip", "Descrip",
+                     "CommonName", "MfgName", "ScientificName", "Energy_kcal"]
+    for key in nutrients_data[0].keys():
+        if key not in non_nutrients:
+            nut_lst = key.split("_")
+            final_list.append((nut_lst[0], key))
+    f.close()
+    return final_list
+
+
 @irsystem.route('/', methods=['GET'])
 def search():
     # get list of nutrients and category name
     query_desc = request.args.get('search')
     nutr_list = request.args.getlist('nutrients')
     cat_list = request.args.get('cat_search')
-
+    p_list = request.args.getlist('selret')
+    print("p_list IS" + str(p_list))
     # final = category_filtering(str(cat_list))
 
     # if anthing is blank do nothing else put nutrients into list and pass category name with it to processing _data function
@@ -32,7 +59,7 @@ def search():
         for nutr in nutr_list:
             nutr_val.append(nutr)
         output_message = "Your search: " + query_desc
-        final = category_filtering(cat_list)
+        # final = category_filtering(cat_list)
         # category_name = query
         if cat_list:
             category_list = category_filtering(str(cat_list))
@@ -53,9 +80,14 @@ def search():
         # for desc in desc_list:
 
         # output = processing_data(query_val, category_name)
-        data = desc_list[:5]
+        # if len(desc_list) <= 20:
+        data = desc_list[:6]
+        # else:
+        #     data = desc_list[-1]+desc_list[1] + \
+        #         desc_list[len(desc_list)//2]+desc_list[len(desc_list) //
+        #                                                4] + desc_list[len(desc_list)//8]
 
-    return render_template('auto.html', name=project_name, netid=net_id, output_message=output_message, data=data)
+    return render_template('boltc.html', name=project_name, netid=net_id, output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list())
 
 
 def processing_data(query_nutrients, category_name):
@@ -108,9 +140,15 @@ def category_filtering(query_categories):
 
 def nutrients_filtering(cat_output, query_nutrients):
     nutr_out = []
+    nutr_list = []
+    for x in list_nutrients():
+        nutr_list.append(x[1])
     for food_item in cat_output:
         for nutrient in query_nutrients:
-            if float(food_item[nutrient]) > 0:
+            # print("THIS IS NUTRIENT" + str(nutrient))
+            nutrient = edit_distance_search(nutrient, nutr_list)
+            # print("THIS IS NUTRIENT" + str(nutrient))
+            if float(food_item[nutrient[1]]) > 0:
                 nutr_out.append(food_item)
                 break
     return nutr_out
