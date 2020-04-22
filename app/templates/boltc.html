@@ -136,7 +136,7 @@
       </script>
         <div class="container ">
           <br><br><br>
-          <button type="submit" style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB);" class="btn btn-lg btn-block text-white " style="border-color:transparent;">Go</button>
+          <button type="submit" style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:transparent;" class="btn btn-lg btn-block text-white " >Go</button>
         </div>
 
         <!-- <button type="submit" class="btn btn-info">Go!</button> -->
@@ -153,13 +153,26 @@
         {% if data %}
         <h1 class="text-center">{{output_message}}</h1><br><br>
         <div class="row">
-          <div class="card-deck">
+          <!-- <div class="card-deck"> -->
             
              <!-- <div class="card-columns"> -->
           {% for d in data %}
-          
+          <div class="card w-50 mb-5 mx-auto d-block col-7">
+            <div class="card-body ">
+                <div class="row">
+                  <div class="col-9">
+                    <h5 class="card-title">C{{d["Descrip"]}}</h5>
+                    <p class="card-text"> {{d["FoodGroup"]}} </p>
+                  </div>
+                  <div class="col-2">
+                    <a href="#" class="btn btn-primary pr-4 pl-4 pt-2 pb-2" style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:white;" >Add to Cart</a>
+                  </div>  
+                </div>
+            </div>
+          </div>
+          <br>
 
-          <div class="col-4 mb-4">
+          <!-- <div class="col-4 mb-4">
             <div class="container ">
               <div class="card">
                 <img src="{{url_for('static', filename='nutrients.jpg')}}"  class="card-img-top" alt="...">
@@ -169,7 +182,7 @@
                 </div>
               </div>
           </div>
-        </div>
+        </div> -->
 
         {% endfor %}
         </div>
