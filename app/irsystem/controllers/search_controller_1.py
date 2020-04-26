@@ -120,8 +120,9 @@ def search():
         else:
             desc_filt_list = nutr_list
             desc_list = rank_results2(desc_filt_list, nutr_val)
-        data = desc_list[:10]
-
+        final = desc_list[:20]
+        data = random.shuffle(final)
+        data = data[:10]
     return render_template('boltc.html', name=project_name, netid=net_id, output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list())
 
 
@@ -344,7 +345,6 @@ def rank_results(descript_list, query_nutrients):
             for i in range(11):
                 final_ranks.append(rank_set[i][0])
 
-            final_ranks = random.shuffle(final_ranks)
             return final_ranks
     else:
         return descript_list[:10]
