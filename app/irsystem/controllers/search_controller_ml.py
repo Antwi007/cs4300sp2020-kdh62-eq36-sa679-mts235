@@ -205,8 +205,8 @@ def list_nutrients():
     return final_list
 
 
-@irsystem.route('/', methods=['GET'])
-def search():
+@irsystem.route('/home', methods=['GET'])
+def search_1():
     # get list of nutrients and category name
     query_desc = request.args.get('search')
     nutr_list = request.args.getlist('nutrients')

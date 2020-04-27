@@ -8,11 +8,132 @@ import re
 import random
 
 
+from sklearn.model_selection import ShuffleSplit
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import BernoulliNB
+
 project_name = "Project Re-search"
 net_id = "Nana Antwi: nka32, Max Stallop: mls235, Edwin Quaye: eq36, Stephen Adusei Owusu: sa679, Kenneth Harlley: kdh62"
 
-# f = open('nutrients.json',)
-# nutrients_data = json.load(f)
+allergy_dict = {
+    "Cow's Milk": ["Milk", "Milk powder", "Cheese", "Butter", "Margarine", "yogurt", "cream", "ice cream"],
+    "Eggs": ["egg", "eggs"],
+    "Tree nuts": ["Brazil nuts", "almonds", "cashews", "macadamia nuts", "pistachios", "pine nuts", "walnuts", "nuts"],
+    "Peanuts": ["peanut", "peanuts", "nuts"],
+    "Shellfish": ["Shrimp", "prawns", "crayfish", "lobster", "squid", "scallops"],
+    "Wheat": ["wheat"],
+    "Soy": ["soy", "soybean"],
+    "Fish": ["fish"],
+    "others": ["linseed", "sesame seed", "peach", "banana", "avocado", "kiwi fruit", "passion fruit", "celery", "garlic", "mustard seed", "aniseed", "chamomile"]
+}
+
+
+def allergen_val(allergy_dict):
+    output = {}
+    f = open('nutrients.json',)
+    nutrients_data = json.load(f)
+    for allergy in allergy_dict:
+        ids = []
+        for food in nutrients_data:
+            if intersect(food['Descrip'], allergy_dict[allergy]):
+                ids.append(food["Descrip"])
+        output[allergy] = ids
+
+    return output
+
+
+def intersect(str1, list1):
+    str1 = str1.split(",")
+    str1 = [value.lower() for value in str1]
+    list1 = [value.lower() for value in list1]
+    output = [value for value in list1 if value in str1]
+    if len(output) > 0:
+        return True
+    return False
+# function to find foods in database without the allergy primers
+
+
+def reverse_allergen(allergy_dict):
+    output = {}
+    f = open('nutrients.json',)
+    nutrients_data = json.load(f)
+    for allergy in allergy_dict:
+        ids = []
+        num = 0
+        for food in nutrients_data:
+            if not intersect(food['Descrip'], allergy_dict[allergy]) and num != 50:
+                ids.append(food["Descrip"])
+                num += 1
+        output[allergy] = ids
+
+    return output
+
+
+def ml_list():
+    f = open('nutrients.json',)
+    nutrients_data = json.load(f)
+    non_lactose = []
+    lactose = []
+    for item in nutrients_data:
+        # food_group = item["FoodGroup"]
+        if item["FoodGroup"] == "Poultry Products":
+            non_lactose.append(item["Descrip"])
+        elif item["FoodGroup"] == "Dairy and Egg Products":
+            lactose.append(item["Descrip"])
+    f.close()
+    return lactose, non_lactose
+
+
+# returns the indices of output_data that satisfy the allergen
+def bernoulli_nb(allergy_name, output_data):
+    """
+    Returns the indices of output data that based on the bernoulli naive-bayes algorithm
+    won't contain any allergens.
+    """
+    # breaking some food item descriptions into lactose and non-lactose then noting their classes in seperate arrays with matching indexes
+    # allergen is a list of descriptions, for a specified allergy
+    output_data = [data["Descrip"] for data in output_data]
+    # STEPHEN FUNCTION CHANGE
+    allergen, non_allergen = reverse_allergen(allergy_dict)[allergy_name], allergen_val(
+        allergy_dict)[allergy_name]
+    allergen_classes = [allergy_name for _ in allergen]
+    non_allergen_classes = ["Not Allergen" for _ in non_allergen]
+    descs = allergen + non_allergen
+    descs = np.array(descs)
+    classes = allergen_classes + non_allergen_classes
+    classes = np.array(classes)
+
+    # obtaining a random division of indexes to be able to get testing and training data
+    nr_descs = len(descs)
+    shuffle_split = ShuffleSplit(nr_descs, test_size=0.5, random_state=0)
+    x = shuffle_split.split(descs)
+    for train_idx, test_idx in x:
+        pass
+
+    # training and test data
+    descs_train = descs[train_idx]
+    descs_test = descs[test_idx]
+    classes_train = classes[train_idx]
+    classes_test = classes[test_idx]
+
+    # obtain term document matrix which will be used to fit the data
+    vectorizer = CountVectorizer(ngram_range=(1, 2))
+    vectorizer.fit(descs_train)
+    # terms = vectorizer.get_feature_names()
+    term_document_matrix_train = vectorizer.transform(descs_train)
+
+    # create actual Bernoulli classifier
+    classifier = BernoulliNB(alpha=1)
+    classifier.fit(term_document_matrix_train, classes_train)
+
+    term_document_matrix_test = vectorizer.transform(descs_test)
+    term_document_matrix_output = vectorizer.transform(output_data)
+
+    predicted_classes_output = classifier.predict(term_document_matrix_output)
+    indices_satisfy = np.where(predicted_classes_output != allergy_name)[0]
+
+    return np.array(indices_satisfy)
 
 
 def categ_list():
@@ -34,10 +155,15 @@ def stop_words():
     with heroku
     """
     stop_words = []
-    f = open("english_words", "r")
+    f = open("words", "r")
     for x in f:
         line = re.sub('[\n]', '', x)
         stop_words.append(line)
+    f.close()
+    # with open_resource('static/poemInput.txt') as f:
+    #     for x in f:
+    #         line = re.sub('[\n]', '', x)
+    #         stop_words.append(line)
     return stop_words
 
 
@@ -56,6 +182,7 @@ def split_cat(cat_list):
             words = [w for w in word_1 if not w in stop_words_1]
         for food in words:
             if food != 'Products' and food != 'Foods':
+                # shouldn't this be appending to a list
                 cat_list_1[food] = word
     return cat_list_1
 
@@ -79,24 +206,20 @@ def list_nutrients():
     return prem_list
 
 
-@irsystem.route('/', methods=['GET'])
+@irsystem.route('/about', methods=['GET'])
 # if nutrient_tup not in output:
-def search():
+def search_2():
     # get list of nutrients and category name
     query_desc = request.args.get('search')
     nutr_list = request.args.getlist('nutrients')
     cat_list = request.args.get('cat_search')
     p_list = request.args.getlist('selret')
-    print("p_list IS" + str(p_list))
-    # final = category_filtering(str(cat_list))
 
     # if anthing is blank do nothing else put nutrients into list and pass category name with it to processing _data function
     if not query_desc and not nutr_list and not cat_list:
-        print("HERE 1")
         data = []
         output_message = ''
     else:
-        print("HERE 2")
         nutr_val = []
         for nutr in nutr_list:
             nutr_val.append(nutr)
@@ -120,9 +243,15 @@ def search():
         else:
             desc_filt_list = nutr_list
             desc_list = rank_results2(desc_filt_list, nutr_val)
+        if desc_list != []:
+            output_indices = bernoulli_nb("Cow's Milk", desc_list)
+            desc_list = np.array(desc_list)[output_indices]
+            data = np.ndarray.tolist(desc_list)[:6]
+        else:
+            data = desc_list[:10]
         data = desc_list[:10]
 
-    return render_template('boltc.html', name=project_name, netid=net_id, output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list())
+    return render_template('botlc_2.html', name=project_name, netid=net_id, output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list())
 
 
 def processing_data(query_nutrients, category_name):
