@@ -480,7 +480,7 @@ def rank_results(descript_list, query_nutrients):
 
         for nut_data in output.keys():
             rank_set = list(output[nut_data])
-            for i in range(11):
+            for i in range(len(rank_set)):
                 final_ranks.append(rank_set[i][0])
             return final_ranks
     else:
