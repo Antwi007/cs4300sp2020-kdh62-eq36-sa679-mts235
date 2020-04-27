@@ -338,13 +338,18 @@ def nutrients_filtering(cat_output, query_nutrients):
     for x in list_nutrients():
         nutr_list.append(x[1])
 
+    # i = 0
     for food_item in cat_output:
+
         for nutrient in query_nutrients:
             nutrient = edit_distance_search(nutrient, nutr_list)
             # print(nutrient)
-            if float(food_item[nutrient[1]]) > 0:
+            if float(food_item[nutrient[1]]) > calorie_level[nutrient[1]]*0.25:
                 # isnt this the same as before??
+                # i += 1
                 nutr_out.append(food_item)
+                # if i >= 4000:
+                #     return nutr_out
                 break
     return nutr_out
 
