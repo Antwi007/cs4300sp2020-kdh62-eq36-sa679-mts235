@@ -17,14 +17,14 @@ project_name = "Project Re-search"
 net_id = "Nana Antwi: nka32, Max Stallop: mls235, Edwin Quaye: eq36, Stephen Adusei Owusu: sa679, Kenneth Harlley: kdh62"
 
 allergy_dict = {
-    "Cow's Milk": ["Milk", "Milk powder", "Cheese", "Butter", "Margarine", "yogurt", "cream", "ice cream"],
-    "Eggs": ["egg", "eggs"],
-    "Tree nuts": ["Brazil nuts", "almonds", "cashews", "macadamia nuts", "pistachios", "pine nuts", "walnuts", "nuts"],
-    "Peanuts": ["peanut", "peanuts", "nuts"],
-    "Shellfish": ["Shrimp", "prawns", "crayfish", "lobster", "squid", "scallops"],
-    "Wheat": ["wheat"],
-    "Soy": ["soy", "soybean"],
-    "Fish": ["fish"],
+    "Lactose intolerant": ["Milk", "Milk powder", "Cheese", "Butter", "Margarine", "yogurt", "cream", "ice cream"],
+    "Eggs allergy": ["egg", "eggs"],
+    "Tree nuts allergy": ["Brazil nuts", "almonds", "cashews", "macadamia nuts", "pistachios", "pine nuts", "walnuts", "nuts"],
+    "Peanuts allergy": ["peanut", "peanuts", "nuts"],
+    "Shellfish allergy": ["Shrimp", "prawns", "crayfish", "lobster", "squid", "scallops"],
+    "Wheat allergy": ["wheat"],
+    "Soy allergy": ["soy", "soybean"],
+    "Fish allergy": ["fish"],
     "others": ["linseed", "sesame seed", "peach", "banana", "avocado", "kiwi fruit", "passion fruit", "celery", "garlic", "mustard seed", "aniseed", "chamomile"]
 }
 
@@ -62,7 +62,7 @@ def reverse_allergen(allergy_dict):
         ids = []
         num = 0
         for food in nutrients_data:
-            if not intersect(food['Descrip'], allergy_dict[allergy]) and num != 50:
+            if not intersect(food['Descrip'], allergy_dict[allergy]) and num != 100:
                 ids.append(food["Descrip"])
                 num += 1
         output[allergy] = ids
@@ -131,7 +131,7 @@ def bernoulli_nb(allergy_name, output_data):
     term_document_matrix_output = vectorizer.transform(output_data)
 
     predicted_classes_output = classifier.predict(term_document_matrix_output)
-    indices_satisfy = np.where(predicted_classes_output != allergy_name)[0]
+    indices_satisfy = np.where(predicted_classes_output == allergy_name)[0]
 
     return np.array(indices_satisfy)
 
@@ -206,15 +206,14 @@ def list_nutrients():
     return prem_list
 
 
-@irsystem.route('/about', methods=['GET'])
+@irsystem.route('/', methods=['GET'])
 # if nutrient_tup not in output:
 def search_2():
     # get list of nutrients and category name
     query_desc = request.args.get('search')
     nutr_list = request.args.getlist('nutrients')
-    cat_list = request.args.get('cat_search')
-    p_list = request.args.getlist('selret')
-
+    cat_list = request.args.getlist('cat_search')
+    allergy_list = request.args.getlist('allergies')
     # if anthing is blank do nothing else put nutrients into list and pass category name with it to processing _data function
     if not query_desc and not nutr_list and not cat_list:
         data = []
@@ -224,12 +223,10 @@ def search_2():
         for nutr in nutr_list:
             nutr_val.append(nutr)
         output_message = "Your search: " + query_desc
-        # final = category_filtering(cat_list)
-        # category_name = query
         if cat_list:
             category_list = category_filtering(str(cat_list))
         else:
-            category_list = json.load(open('nutrients.json',))
+            category_list = json.load(open('datasets/nutrients3.json',))
         if nutr_val:
             # print("Category List is: " + str(category_list))
             nutr_list = nutrients_filtering(category_list, nutr_val)
@@ -239,53 +236,54 @@ def search_2():
         if query_desc:
           # This works only if a user provides a description list
             desc_filt_list = descrip_filtering(query_desc, nutr_list)
+            if desc_filt_list == []:
+                desc_filt_list = review_filtering(query_desc, nutr_list)
+                print("DESC FILT LIST: " + str(len(desc_filt_list)))
             desc_list = rank_results(desc_filt_list, nutr_val)
         else:
             desc_filt_list = nutr_list
-            desc_list = rank_results2(desc_filt_list, nutr_val)
-        if desc_list != []:
-            output_indices = bernoulli_nb("Cow's Milk", desc_list)
-            desc_list = np.array(desc_list)[output_indices]
-            data = np.ndarray.tolist(desc_list)[:6]
-        else:
-            data = desc_list[:10]
+            # rank_Results 2 do later
+            desc_list = rank_results(desc_filt_list, nutr_val)
+        if desc_list is None:
+            desc_list = []
+        print("DESC LIST IS" + str(len(desc_list)))
+        if desc_list:
+            for allergy in allergy_list:
+                output_indices = bernoulli_nb(allergy, desc_list)
+                desc_list = np.array(desc_list)[output_indices]
+                desc_list = np.ndarray.tolist(desc_list)
+            print("ALEERGY LIST IS" + str(len(desc_list)))
         random.shuffle(desc_list)
         data = desc_list[:10]
 
-    return render_template('botlc_2.html', name=project_name, netid=net_id, output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list())
+    return render_template('boltcnew.html', name=project_name, netid=net_id, output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list(), allergies=allergy_dict)
 
 
-def processing_data(query_nutrients, category_name):
-    output = []
-    f = open('nutrients.json',)
-    nutrients_data = json.load(f)
-    # Loop through all the different food itwms storing their name and category
-    for i in range(len(nutrients_data)):
-        name = nutrients_data[i]["ShortDescrip"]
-        category = nutrients_data[i]["FoodGroup"]
-        # for every nutrient requested in the query, compare it with the current food item.
-        # If the food item has the correct nutrient and also is in the category name add it to the output
-        # and remove the nutrient from the list of requested nutrients since it has been added to the grocery list
-        for nutrient in query_nutrients:
-            if float(nutrients_data[i][nutrient]) > 0 and category == category_name:
-                nutrient_tup = (name, category)
-                # if the nutrient is already in the ouptu don't add
-                if nutrient_tup not in output:
-                    output.append(nutrient_tup)
-                query_nutrients.remove(nutrient)
-        if query_nutrients == []:
-            break
+def review_filtering(desc, food_items):
+    # f = open('datasets/nutrients3.json',)
+    # food_items = json.load(f)
+    # food_items = food_items[:5]
+    final_list = []
+    for item in food_items:
+        for review in item["review"]:
+            for actual_review in review:
+                list_of_words = actual_review.split()
+                if intersect(desc, list_of_words):
+                    if item not in final_list:
+                        final_list.append(item)
+    return final_list
+    # print(review)
     f.close()
-    return output
 
 
 def category_filtering(query_categories):
     """Filter query categories to include only relevant categories
     """
-    f = open('nutrients.json',)
+    f = open('datasets/nutrients3.json',)
     nutrients_data = json.load(f)
     category_list = categ_list()
     split_cat_dict = split_cat(category_list)
+    # print(split_cat_dict)
     # separate between input to get list
     q_cat_list = query_categories.split(",")
     # Split query list into individual categories just like original categories in json
@@ -343,7 +341,9 @@ def nutrients_filtering(cat_output, query_nutrients):
     for food_item in cat_output:
         for nutrient in query_nutrients:
             nutrient = edit_distance_search(nutrient, nutr_list)
+            # print(nutrient)
             if float(food_item[nutrient[1]]) > 0:
+                # isnt this the same as before??
                 nutr_out.append(food_item)
                 break
     return nutr_out
@@ -452,7 +452,7 @@ def rank_results(descript_list, query_nutrients):
         final_ranks = []
         for x in list_nutrients():
             nutr_list.append(x[1])
-
+        # print("NUTRIENT LIST IS" + str(nutr_list))
         for nutrient in query_nutrients:
             nutrient_1 = edit_distance_search(nutrient, nutr_list)
             nut = nutrient_1[1]
@@ -464,6 +464,7 @@ def rank_results(descript_list, query_nutrients):
                     nut_score = float(item[nut])
                     nut_score_dict[nut].append((item, nut_score))
 
+        # print("NUTRIENT SCORE DICT: " + str(nut_score_dict))
         for nutrient in nut_score_dict.keys():
             nutrient_list = nut_score_dict[nutrient]
             fin = sorted(nutrient_list, key=lambda x: x[1], reverse=True)
@@ -475,7 +476,7 @@ def rank_results(descript_list, query_nutrients):
                 final_ranks.append(rank_set[i][0])
             return final_ranks
     else:
-        return descript_list[:10]
+        return descript_list
 
 
 def rank_results2(query_nutrients):

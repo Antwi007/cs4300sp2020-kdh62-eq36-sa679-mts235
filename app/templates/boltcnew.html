@@ -114,6 +114,7 @@
           <div class="topcorner">
             <p>Project Name: {{ name }}</p>
             <p>Student Name: ({{ netid }})</p>
+            <a href ="{{ url_for('irsystem.search') }}">Prototype 1</a>
           </div>
           <img src="{{url_for('static', filename='grocery_image.png')}}"  class="img-fluid rounded mx-auto d-block pl-4" alt="..." style="max-height:200px;">
           <h1
@@ -161,7 +162,7 @@
                 <h1 class="text-right text-white">Category</h4>
               </div>
               <div class="col-8">
-                <select class="form-control tokenizer2" name = "cat_search" multiple="multiple" placeholder = "Input the Nutrients you desire">
+                <select class="form-control tokenizer2" name = "cat_search" multiple="multiple" >
                   {% if cat_list %} {% for cat in cat_list %}
 
                   <option  value="{{ cat }}" class="bg-danger">{{ cat }}</option> 
@@ -176,10 +177,10 @@
                 <h1 class="text-right text-white">Allergies</h1>
               </div>
               <div class="col-8">
-                <select id="allergies" class="form-control form-control-lg p-3" style = "font-size: 12px;">
-                  <option value="lactose">Lactose</option>
-                  <option value="gluten">Gluten</option>
-                  <option value="nuts">Nuts</option>
+                <select id="allergies" class="form-control form-control-lg p-3 tokenizer3" name="allergies" multiple="multiple">
+                  {% if allergies %} {% for allergy in allergies %}
+                  <option  value="{{ allergy }}">{{ allergy }}</option> 
+                  {% endfor %} {% endif %}
                 </select>
               </div>
             </div>
@@ -212,6 +213,13 @@
                 tags: true,
                 tokenSeparators: [',', ' '],
                 placeholder: "Categories ie. Dairy, Sweets",
+                  allowClear: true
+            })
+
+            $(".tokenizer3").select2({
+                tags: true,
+                tokenSeparators: [',', ' '],
+                placeholder: "Allergies ie. Lactose Intolerant",
                   allowClear: true
             })
 
@@ -297,9 +305,9 @@
       </div>
       <div id="rightflex">
         <div class="container " id="cart-container">
-          <h1 id="cart-label">Your Cart</h1>
-          <button id="cart-clear" onClick="localStorage.clear(); location.reload();" style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:transparent;">Clear</button>
-          <div id="cart">
+          <h1 id="cart-label" class="text-white">Your Cart</h1>
+          <button id="cart-clear" onClick="localStorage.clear(); location.reload();" class="btn btn-primary pr-4 pl-4 pt-2 pb-2" style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:transparent;">Clear</button>
+          <div id="cart" style ="margin-top: 50px;">
 
           </div>
         </div>
