@@ -473,6 +473,7 @@ def rank_results(descript_list, query_nutrients):
             for i in range(11):
                 final_ranks.append(rank_set[i][0])
 
+            final_ranks = random.shuffle(final_ranks)
             return final_ranks
     else:
         return descript_list[:10]
