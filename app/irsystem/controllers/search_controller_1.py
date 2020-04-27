@@ -249,6 +249,7 @@ def search_2():
             data = np.ndarray.tolist(desc_list)[:6]
         else:
             data = desc_list[:10]
+        random.shuffle(desc_list)
         data = desc_list[:10]
 
     return render_template('botlc_2.html', name=project_name, netid=net_id, output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list())
@@ -472,8 +473,6 @@ def rank_results(descript_list, query_nutrients):
             rank_set = list(output[nut_data])
             for i in range(11):
                 final_ranks.append(rank_set[i][0])
-
-            final_ranks = random.shuffle(final_ranks)
             return final_ranks
     else:
         return descript_list[:10]
