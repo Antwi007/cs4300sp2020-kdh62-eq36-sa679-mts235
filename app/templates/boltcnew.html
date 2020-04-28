@@ -1,190 +1,178 @@
 <html>
-  <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link
-      href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-    <link rel="stylesheet" href="/static/bootstrap.min.css" />
-    <link rel="stylesheet" href="/static/main.css" />
 
-    <!-- Bootstrap -->
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-      crossorigin="anonymous"
-    />
-    <!-- Select2 -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+  <link rel="stylesheet" href="/static/bootstrap.min.css" />
+  <link rel="stylesheet" href="/static/main.css" />
 
-    <style>
-      .gradienttext {
-        /* font-size: 72px; */
-        background: -webkit-linear-gradient(#FBAE57, #DA554B, #614FAB);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+  <!-- Select2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
-      body{
-        background-image: linear-gradient(#FBAE57, #DA554B, #614FAB, white, white);
-        padding-top: 150px;
-      }
+  <style>
+    .gradienttext {
+      /* font-size: 72px; */
+      background: -webkit-linear-gradient(#FBAE57, #DA554B, #614FAB);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-      #cart-container {
-        position: relative;
-        max-width: 800px;
-      }
+    body {
+      background-image: linear-gradient(#FBAE57, #DA554B, #614FAB, white, white);
+      padding-top: 150px;
+    }
 
-      #cart-label {
-        display: inline;
-        margin: 0;
-      }
+    #cart-container {
+      position: relative;
+      max-width: 800px;
+    }
 
-      #cart-clear {
-        display: inline;
-        position:absolute;
-        right:0;
-        margin-right: 14px;
-        font-size: 16px;
-      }
+    #cart-label {
+      display: inline;
+      margin: 0;
+    }
 
-      #cart {
-        background-color: white;
-        border-style: solid;
-        border-width: 1px;
-        border-color: rgba(0,0,0,.125);
-      }
+    #cart-clear {
+      display: inline;
+      position: absolute;
+      right: 0;
+      margin-right: 14px;
+      font-size: 16px;
+    }
 
-      #cart div {
-        padding: 20px;
-      }
+    #cart {
+      background-color: white;
+      border-style: solid;
+      border-width: 1px;
+      border-color: rgba(0, 0, 0, .125);
+    }
 
-      .dropdown {
-        position: relative;
-        display: inline-block;
-        border-style: solid;
-        border-width: 1px;
-        border-color: rgba(0,0,0,.125);
-        padding: 5px;
-      }
+    #cart div {
+      padding: 20px;
+    }
 
-      .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #ffffff;
-        border-color: #000000;
-        border-width: 1px;
-        min-width: 160px;
-        box-shadow: 0px 12px 12px 0px rgba(0,0,0,0.2);
-        padding: 12px 16px;
-        z-index: 1;
-      }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      border-style: solid;
+      border-width: 1px;
+      border-color: rgba(0, 0, 0, .125);
+      padding: 5px;
+    }
 
-      .dropdown:hover .dropdown-content {
-        display: block;
-      }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #ffffff;
+      border-color: #000000;
+      border-width: 1px;
+      min-width: 160px;
+      box-shadow: 0px 12px 12px 0px rgba(0, 0, 0, 0.2);
+      padding: 12px 16px;
+      z-index: 1;
+    }
 
-      #mainflex {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-      }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
 
-      #leftflex {
-        flex: 50%;
-        max-width: 40%;
-      }
+    #mainflex {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
 
-      #rightflex {
-        flex: 50%;
-        max-width: 40%;
-      }
-    </style>
-  </head>
-  <body onload="displayListItems()">
-    <div id="mainflex">
-      <div id = "leftflex">
-        <div class="container ">
-          <div class="topcorner">
-            <p>Project Name: {{ name }}</p>
-            <p>Student Name: ({{ netid }})</p>
-            <a href ="{{ url_for('irsystem.search') }}">Prototype 1</a>
-          </div>
-          <img src="{{url_for('static', filename='grocery_image.png')}}"  class="img-fluid rounded mx-auto d-block pl-4" alt="..." style="max-height:200px;">
-          <h1
-            style="font-size: 55px; font-family: Futura; color: #4285f4;"
-            class="text-center text-white"
-          >
+    #leftflex {
+      flex: 50%;
+      max-width: 40%;
+    }
+
+    #rightflex {
+      flex: 50%;
+      max-width: 40%;
+    }
+  </style>
+</head>
+
+<body onload="displayListItems()">
+  <div id="mainflex">
+    <div id="leftflex">
+      <div class="container ">
+        <div class="topcorner">
+          <p>Project Name: {{ name }}</p>
+          <p>Student Name: ({{ netid }})</p>
+          <a href="{{ url_for('irsystem.search') }}">Prototype 1</a>
+        </div>
+        <img src="{{url_for('static', filename='grocery_image.png')}}" class="img-fluid rounded mx-auto d-block pl-4"
+          alt="..." style="max-height:200px;">
+        <h1 style="font-size: 55px; font-family: Futura; color: #4285f4;" class="text-center text-white">
           Bolt Cart
-            <!-- <span style="color: #ea4335;">B</span>
+          <!-- <span style="color: #ea4335;">B</span>
             <span style="color: #ea4335;">O</span>
             <span style="color: #34a853;">L</span>
             <span style="color: #ea4335;">T</span> -->
-          </h1>
+        </h1>
 
-          <br /><br />
-          <form  action="#" >
-            <div class="form-group row">
-              <div class="col-3">
-                <h1 class="text-right text-white">Description</h4>
-              </div>
-              <div class="col-8">
-                <input
-                  class="form-control form-control-lg p-3"
-                  name="search"
-                  placeholder="Food Description ie. chips, sour, salty"
-                  style = "font-size: 12px;"
-                />
-              </div>
+        <br /><br />
+        <form action="#">
+          <div class="form-group row">
+            <div class="col-3">
+              <h1 class="text-right text-white">Description</h4>
             </div>
-            <div class="form-group row">
-              <div class="col-3">
-                <h1 class="text-right text-white">Nutrients</h4>
-              </div>
-              <div class="col-8">
-                <select class="form-control tokenizer" name = "nutrients" multiple="multiple" placeholder = "Input the Nutrients you desire">
-                  {% if nutr_list %} {% for nutr in nutr_list %}
-                  <option  value="{{ nutr[1] }}" >{{ nutr[0] }}</option> 
-
-                  {% endfor %} {% endif %}
-
-                </select>
-              </div>
+            <div class="col-8">
+              <input class="form-control form-control-lg p-3" name="search"
+                placeholder="ie. Blue Cheese, Sour Cream, Pork" style="font-size: 12px;" />
             </div>
-            <div class="form-group row">
-              <div class="col-3">
-                <h1 class="text-right text-white">Category</h4>
-              </div>
-              <div class="col-8">
-                <select class="form-control tokenizer2" name = "cat_search" multiple="multiple" >
-                  {% if cat_list %} {% for cat in cat_list %}
-
-                  <option  value="{{ cat }}" class="bg-danger">{{ cat }}</option> 
-
-                  {% endfor %} {% endif %}
-
-                </select>
-              </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-3">
+              <h1 class="text-right text-white">Nutrients</h4>
             </div>
-            <div class="form-group row">
-              <div class="col-3">
-                <h1 class="text-right text-white">Allergies</h1>
-              </div>
-              <div class="col-8">
-                <select id="allergies" class="form-control form-control-lg p-3 tokenizer3" name="allergies" multiple="multiple">
-                  {% if allergies %} {% for allergy in allergies %}
-                  <option  value="{{ allergy }}">{{ allergy }}</option> 
-                  {% endfor %} {% endif %}
-                </select>
-              </div>
+            <div class="col-8">
+              <select class="form-control tokenizer" name="nutrients" multiple="multiple"
+                placeholder="Input the Nutrients you desire">
+                {% if nutr_list %} {% for nutr in nutr_list %}
+                <option value="{{ nutr[1] }}">{{ nutr[0] }}</option>
+
+                {% endfor %} {% endif %}
+
+              </select>
             </div>
-            <script>
+          </div>
+          <div class="form-group row">
+            <div class="col-3">
+              <h1 class="text-right text-white">Category</h4>
+            </div>
+            <div class="col-8">
+              <select class="form-control tokenizer2" name="cat_search" multiple="multiple">
+                {% if cat_list %} {% for cat in cat_list %}
+
+                <option value="{{ cat }}" class="bg-danger">{{ cat }}</option>
+
+                {% endfor %} {% endif %}
+
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-3">
+              <h1 class="text-right text-white">Allergies</h1>
+            </div>
+            <div class="col-8">
+              <select id="allergies" class="form-control form-control-lg p-3 tokenizer3" name="allergies"
+                multiple="multiple">
+                {% if allergies %} {% for allergy in allergies %}
+                <option value="{{ allergy }}">{{ allergy }}</option>
+                {% endfor %} {% endif %}
+              </select>
+            </div>
+          </div>
+          <script>
 
             $('select').select2({
               createTag: function (params) {
@@ -203,78 +191,83 @@
             });
 
             $(".tokenizer").select2({
-                tags: true,
-                tokenSeparators: [',', ' '],
-                placeholder: "Nutrients ie. Protein, Calcium",
-                  allowClear: true
+              tags: true,
+              tokenSeparators: [',', ' '],
+              placeholder: "ie. Protein, Calcium",
+              allowClear: true
             })
 
             $(".tokenizer2").select2({
-                tags: true,
-                tokenSeparators: [',', ' '],
-                placeholder: "Categories ie. Dairy, Sweets",
-                  allowClear: true
+              tags: true,
+              tokenSeparators: [',', ' '],
+              placeholder: "ie. Dairy, Snacks, Baby Foods",
+              allowClear: true
             })
 
             $(".tokenizer3").select2({
-                tags: true,
-                tokenSeparators: [',', ' '],
-                placeholder: "Allergies ie. Lactose Intolerant",
-                  allowClear: true
+              tags: true,
+              tokenSeparators: [',', ' '],
+              placeholder: "ie. Lactose Intolerant",
+              allowClear: true
             })
 
 
 
           </script>
-            <div class="container ">
-              <br><br><br>
-              <button type="submit" style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:transparent;" class="btn btn-lg btn-block text-white " >Go</button>
-            </div>
+          <div class="container ">
+            <br><br><br>
+            <button type="submit"
+              style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:transparent;"
+              class="btn btn-lg btn-block text-white ">Go</button>
+          </div>
 
-            <!-- <button type="submit" class="btn btn-info">Go!</button> -->
-          </form>
+          <!-- <button type="submit" class="btn btn-info">Go!</button> -->
+        </form>
 
-          <br />
-          <br />
+        <br />
+        <br />
 
 
-          <br />
-          <br />
+        <br />
+        <br />
 
-          {% if data %}
-          <h1 class="text-center">{{output_message}}</h1><br><br>
-          <div class="row">
-            <!-- <div class="card-deck"> -->
-              
-              <!-- <div class="card-columns"> -->
-            {% for d in data %}
-            <div class="card w-50 mb-5 mx-auto d-block col-7">
-              <div class="card-body ">
-                  <div class="row">
-                    <div class="col-9">
-                      <h5 class="card-title" id="{{d['Descrip']}}">{{d["Descrip"]}}</h5>
-                      <p class="card-text" id ="{{d['Descrip']}}"> {{d["FoodGroup"]}} </p>
-                      <div class="dropdown">
-                        <span>Nutritional Information</span>
-                        <div class="dropdown-content">
-                          {% if nutr_list %} {% for nutr in nutr_list %}
-                          <div>{{ nutr[0] }}: {{d[nutr[1]]}}</div> 
-                          {% endfor %} {% endif %}
-                        </div>
-                      </div>
+        {% if data %}
+        <h1 class="text-center">{{output_message}}</h1><br><br>
+        <div class="row">
+          <!-- <div class="card-deck"> -->
+
+          <!-- <div class="card-columns"> -->
+          {% for d in data %}
+          <div class="card w-50 mb-5 mx-auto d-block col-7">
+            <div class="card-body ">
+              <div class="row">
+                <div class="col-9">
+                  <h5 class="card-title" id="{{d['Descrip']}}">{{d["Descrip"]}}</h5>
+                  <p class="card-text" id="{{d['Descrip']}}"> {{d["FoodGroup"]}} </p>
+                  <div class="dropdown">
+                    <span>Nutritional Information</span>
+                    <div class="dropdown-content">
+                      {% if nutr_list %} {% for nutr in nutr_list %}
+                      <div>{{ nutr[0] }}: {{d[nutr[1]]}}</div>
+                      {% endfor %} {% endif %}
                     </div>
-                    
-                    <div>
-                      <div class="col-2">
-                        <a href="#" onclick="addListItem(this)" class="btn btn-primary pr-4 pl-4 pt-2 pb-2" descrip ="{{d['Descrip']}}" foodgroup ="{{d['FoodGroup']}}" style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:white;" >Add to Cart</a>
-                      </div> 
-                    </div> 
                   </div>
+                </div>
+
+                <div>
+                  <div class="col-2">
+                    <a href="#" onclick="addListItem(this)" class="btn btn-primary pr-4 pl-4 pt-2 pb-2"
+                      descrip="{{d['Descrip']}}" foodgroup="{{d['FoodGroup']}}"
+                      style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:white;">Add
+                      to Cart</a>
+                  </div>
+                </div>
               </div>
             </div>
-            <br>
+          </div>
+          <br>
 
-            <!-- <div class="col-4 mb-4">
+          <!-- <div class="col-4 mb-4">
               <div class="container ">
                 <div class="card">
                   <img src="{{url_for('static', filename='nutrients.jpg')}}"  class="card-img-top" alt="...">
@@ -287,73 +280,70 @@
           </div> -->
 
           {% endfor %}
-          </div>
-        
-          {% endif %} {% if data==[] %}
-          <h1 class="text-center">There were no results for your search</h1>
-          {% endif %}
-
-
-          <br />
-          <br />
-
-
-          <br />
-          <br />
-
-        </div>
-      </div>
-      <div id="rightflex">
-        <div class="container " id="cart-container">
-          <h1 id="cart-label" class="text-white">Your Cart</h1>
-          <button id="cart-clear" onClick="localStorage.clear(); location.reload();" class="btn btn-primary pr-4 pl-4 pt-2 pb-2" style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:transparent;">Clear</button>
-          <div id="cart" style ="margin-top: 50px;">
-
-          </div>
         </div>
 
-        <script>
+        {% endif %} {% if data==[] %}
+        <h1 class="text-center">There were no results for your search</h1>
+        {% endif %}
 
-          function addListItem(id){
-            console.log(id)
-            document.cookie = id.getAttributeNode("descrip").value;
-            var cart = document.getElementById("cart");
-            var descrip = id.getAttributeNode("descrip").value;
-            var foodgroup = id.getAttributeNode("foodgroup").value;
 
-            localStorage.setItem(localStorage.length, descrip + ":" + foodgroup);
-            var newItem = document.createElement("div");
-            newItem.innerHTML += "<h2>" + descrip + "</h2> <h3>" + foodgroup + "</h3>";
-            cart.appendChild(newItem);
-          }
+        <br />
+        <br />
 
-          function displayListItems(){
-            for (i = 0; i < localStorage.length; i++){
-              var pair = localStorage[i];
-              var split = pair.split(":");
-              var newItem = document.createElement("div");
-              newItem.innerHTML += "<h2>" + split[0] + "</h2> <h3>" + split[1] + "</h3>";
-              cart.appendChild(newItem);
-            }
-          }
 
-        </script>
+        <br />
+        <br />
+
       </div>
     </div>
-    <script
-      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+    <div id="rightflex">
+      <div class="container " id="cart-container">
+        <h1 id="cart-label" class="text-white">Your Cart</h1>
+        <button id="cart-clear" onClick="localStorage.clear(); location.reload();"
+          class="btn btn-primary pr-4 pl-4 pt-2 pb-2"
+          style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:transparent;">Clear</button>
+        <div id="cart" style="margin-top: 50px;">
+
+        </div>
+      </div>
+
+      <script>
+
+        function addListItem(id) {
+          console.log(id)
+          document.cookie = id.getAttributeNode("descrip").value;
+          var cart = document.getElementById("cart");
+          var descrip = id.getAttributeNode("descrip").value;
+          var foodgroup = id.getAttributeNode("foodgroup").value;
+
+          localStorage.setItem(localStorage.length, descrip + ":" + foodgroup);
+          var newItem = document.createElement("div");
+          newItem.innerHTML += "<h2>" + descrip + "</h2> <h3>" + foodgroup + "</h3>";
+          cart.appendChild(newItem);
+        }
+
+        function displayListItems() {
+          for (i = 0; i < localStorage.length; i++) {
+            var pair = localStorage[i];
+            var split = pair.split(":");
+            var newItem = document.createElement("div");
+            newItem.innerHTML += "<h2>" + split[0] + "</h2> <h3>" + split[1] + "</h3>";
+            cart.appendChild(newItem);
+          }
+        }
+
+      </script>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+</body>
+
 </html>
