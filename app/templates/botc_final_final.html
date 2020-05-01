@@ -191,11 +191,11 @@
     {% if data %}
     <h1 class="text-center text-white">{{output_message}}</h1><br><br>
     <div class="row">
-      <div class="col-5 ">
-        <div class="container ">
+      <div class="col-5" style="border-style: solid; border-width: thick; border-color:white;">
+        <div class="container p-5">
           <div class="row">
-            <div class="col-6">
-              <h1 class="text-white pb-5">Your Cart</h1>
+            <div class="col-8">
+              <h1 class="text-white pb-5">Your Grocery List</h1>
               <!-- <div class="card w-100 mb-5 ml-5 p-2 ">
                 <div class="card-body ">
     
@@ -209,7 +209,7 @@
                 </div>
               </div> -->
             </div>
-            <div class="col-5">
+            <div class="col-3">
               <button id="cart-clear" onClick="localStorage.clear(); location.reload();"
               class="btn btn-outline-light float-right">Clear</button>
             </div>  
