@@ -28,6 +28,22 @@ allergy_dict = {
     "others": ["linseed", "sesame seed", "peach", "banana", "avocado", "kiwi fruit", "passion fruit", "celery", "garlic", "mustard seed", "aniseed", "chamomile"]
 }
 
+#   quer_desc = query_desc.lower()
+#   quer_desc = str(set(quer_desc.split()))
+#   descrip_list = []
+#   # Stemming
+#   ps = PorterStemmer()
+#   word_tokens = word_tokenize(query_desc)
+#   word_tokens_1 = [w for w in word_tokens if not w in stop_words_1]
+#   stem_set = set([ps.stem(word) for word in word_tokens_1])
+
+#  # Find the intersection between the query description and the food description
+#   # and if it's greater than 0, then there's a match.
+#   for food_item in nutr_out:
+#       # Stem the descriptions in json file
+#       longd = word_tokenize(food_item['Descrip'].lower())
+#       set_longd = set([ps.stem(descp) for descp in longd])
+
 
 def allergen_val(allergy_dict):
     output = {}
@@ -35,23 +51,43 @@ def allergen_val(allergy_dict):
     nutrients_data = json.load(f)
     for allergy in allergy_dict:
         ids = []
-        for food in nutrients_data:
-            if intersect(food['Descrip'], allergy_dict[allergy]):
-                ids.append(food["Descrip"])
-        output[allergy] = ids
-
+        descrip_list = intersect(
+            allergy_dict[allergy][0], nutrients_data, True, 100)
+        # output_allergy =  [desc["Descrip"] for data in output_data]
+        # for food in nutrients_data:
+        #     fointersect(allergy_dict[allergy][0], food):
+        #         ids.append(food["Descrip"])
+        output[allergy] = descrip_list
     return output
 
 
-def intersect(str1, list1):
-    str1 = str1.split(",")
-    str1 = [value.lower() for value in str1]
-    list1 = [value.lower() for value in list1]
-    output = [value for value in list1 if value in str1]
-    if len(output) > 0:
-        return True
-    return False
-# function to find foods in database without the allergy primers
+def intersect(str1, nutr_out, normal, limit):
+    descrip_list = []
+    stop_words_1 = stop_words()
+    str1 = str1.lower()
+
+    ps = PorterStemmer()
+    word_tokens = word_tokenize(str1)
+    word_tokens_1 = [w for w in word_tokens if not w in stop_words_1]
+    stem_set = set([ps.stem(word) for word in word_tokens_1])
+    for food_item in nutr_out:
+        longd = word_tokenize(food_item['Descrip'].lower())
+        set_longd = set([ps.stem(descp) for descp in longd])
+        if normal:
+            if len(stem_set.intersection(set_longd)) > 0:
+                if food_item not in descrip_list:
+                    if food_item not in descrip_list:
+                        descrip_list.append(food_item['Descrip'])
+                        continue
+        else:
+            if len(stem_set.intersection(set_longd)) == 0:
+                if food_item not in descrip_list:
+                    if food_item not in descrip_list:
+                        descrip_list.append(food_item['Descrip'])
+                        if len(descrip_list) >= limit:
+                            break
+                        continue
+    return descrip_list
 
 
 def reverse_allergen(allergy_dict):
@@ -61,11 +97,14 @@ def reverse_allergen(allergy_dict):
     for allergy in allergy_dict:
         ids = []
         num = 0
-        for food in nutrients_data:
-            if not intersect(food['Descrip'], allergy_dict[allergy]) and num != 100:
-                ids.append(food["Descrip"])
-                num += 1
-        output[allergy] = ids
+        descrip_list = intersect(
+            allergy_dict[allergy][0], nutrients_data, False, 100)
+        # for food in nutrients_data:
+
+        #     if not intersect(allergy_dict[allergy][0], food) and num != 100:
+        #         ids.append(food["Descrip"])
+        #         num += 1
+        output[allergy] = descrip_list
 
     return output
 
@@ -86,7 +125,9 @@ def ml_list():
 
 
 # returns the indices of output_data that satisfy the allergen
-def bernoulli_nb(allergy_name, output_data):
+
+
+def bernoulli_nb(allergy_name, output_data, rv_allergens, pos_allergens):
     """
     Returns the indices of output data that based on the bernoulli naive-bayes algorithm
     won't contain any allergens.
@@ -95,8 +136,7 @@ def bernoulli_nb(allergy_name, output_data):
     # allergen is a list of descriptions, for a specified allergy
     output_data = [data["Descrip"] for data in output_data]
     # STEPHEN FUNCTION CHANGE
-    allergen, non_allergen = reverse_allergen(allergy_dict)[allergy_name], allergen_val(
-        allergy_dict)[allergy_name]
+    allergen, non_allergen = rv_allergens[allergy_name], pos_allergens[allergy_name]
     allergen_classes = [allergy_name for _ in allergen]
     non_allergen_classes = ["Not Allergen" for _ in non_allergen]
     descs = allergen + non_allergen
@@ -206,9 +246,13 @@ def list_nutrients():
     return prem_list
 
 
+rv_allergens, pos_allergens = reverse_allergen(allergy_dict), allergen_val(
+    allergy_dict)
+
+
 @irsystem.route('/', methods=['GET'])
 # if nutrient_tup not in output:
-def search_2():
+def search_3():
     # get list of nutrients and category name
     query_desc = request.args.get('search')
     nutr_list = request.args.getlist('nutrients')
@@ -234,11 +278,11 @@ def search_2():
             nutr_val = []
             nutr_list = category_list
         if query_desc:
-          # This works only if a user provides a description list
+            # This works only if a user provides a description list
             desc_filt_list = descrip_filtering(query_desc, nutr_list)
             if desc_filt_list == []:
                 desc_filt_list = review_filtering(query_desc, nutr_list)
-                print("DESC FILT LIST: " + str(len(desc_filt_list)))
+                # print("DESC FILT LIST: " + str(len(desc_filt_list)))
             desc_list = rank_results(desc_filt_list, nutr_val)
         else:
             desc_filt_list = nutr_list
@@ -246,13 +290,14 @@ def search_2():
             desc_list = rank_results(desc_filt_list, nutr_val)
         if desc_list is None:
             desc_list = []
-        print("DESC LIST IS" + str(len(desc_list)))
+        # print("DESC LIST IS" + str(len(desc_list)))
         if desc_list:
             for allergy in allergy_list:
-                output_indices = bernoulli_nb(allergy, desc_list)
+                output_indices = bernoulli_nb(
+                    allergy, desc_list, rv_allergens, pos_allergens)
                 desc_list = np.array(desc_list)[output_indices]
                 desc_list = np.ndarray.tolist(desc_list)
-            print("ALEERGY LIST IS" + str(len(desc_list)))
+            # print("ALEERGY LIST IS" + str(len(desc_list)))
         random.shuffle(desc_list)
         data = desc_list[:10]
 
@@ -447,7 +492,7 @@ def rank_results(descript_list, query_nutrients):
     """ This function ranks the results of the description filter based on the
     nutrient query. Results with higher input nutrient type will rank higher than results
     with lower input nutrient type.
-    For a query like Calcium and Protein and a list of viable descriptions 
+    For a query like Calcium and Protein and a list of viable descriptions
     This function will return a dictionary like:
 
     {protein: [{Nutrient Info1},....

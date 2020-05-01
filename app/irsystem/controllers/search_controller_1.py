@@ -206,7 +206,7 @@ def list_nutrients():
     return prem_list
 
 
-@irsystem.route('/', methods=['GET'])
+@irsystem.route('/previous_project', methods=['GET'])
 # if nutrient_tup not in output:
 def search_2():
     # get list of nutrients and category name
