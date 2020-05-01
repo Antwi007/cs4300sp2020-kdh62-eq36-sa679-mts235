@@ -27,35 +27,6 @@
       padding-top: 150px;
     }
 
-    #cart-container {
-      position: relative;
-      max-width: 800px;
-    }
-
-    #cart-label {
-      display: inline;
-      margin: 0;
-    }
-
-    #cart-clear {
-      display: inline;
-      position: absolute;
-      right: 0;
-      margin-right: 14px;
-      font-size: 16px;
-    }
-
-    #cart {
-      background-color: white;
-      border-style: solid;
-      border-width: 1px;
-      border-color: rgba(0, 0, 0, .125);
-    }
-
-    #cart div {
-      padding: 20px;
-    }
-
     .dropdown {
       position: relative;
       display: inline-block;
@@ -64,38 +35,24 @@
       border-color: rgba(0, 0, 0, .125);
       padding: 5px;
     }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: #ffffff;
-      border-color: #000000;
-      border-width: 1px;
-      min-width: 160px;
-      box-shadow: 0px 12px 12px 0px rgba(0, 0, 0, 0.2);
-      padding: 12px 16px;
-      z-index: 1;
+    .fooditem{
+      background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB);
+       border-color:white;
+       color:white;
     }
 
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
+    a .removec {display: none;}
+    a:hover .removec { display: inline; }
+    a:hover .incart { display: none; }
 
-    #mainflex {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-    }
+    .fooditem:hover{
+    content: 'Remove from Cart';
+    color: black;
+    background-color: transparent;
+    background-image: none ; /* Green */
+    border-color:black;
 
-    #leftflex {
-      flex: 50%;
-      max-width: 40%;
-    }
-
-    #rightflex {
-      flex: 50%;
-      max-width: 40%;
-    }
+    }   
   </style>
 </head>
 
@@ -232,141 +189,138 @@
 
 
     {% if data %}
-    <h1 class="text-center">{{output_message}}</h1><br><br>
+    <h1 class="text-center text-white">{{output_message}}</h1><br><br>
     <div class="row">
-      <!-- <div class="card-deck"> -->
-
-      <!-- <div class="card-columns"> -->
-      <div class="container">
-      <div class="col-6 float-left">
+      <div class="col-5 ">
         <div class="container ">
-          <h1 class="text-white">Your Cart</h1>
-          <button id="cart-clear" onClick="localStorage.clear(); location.reload();"
-            class="btn btn-primary pr-4 pl-4 pt-2 pb-2"
-            style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:transparent;">Clear</button>
-          <div id="cart" style="margin-top: 50px;">
-  
+          <div class="row">
+            <div class="col-6">
+              <h1 class="text-white pb-5">Your Cart</h1>
+              <!-- <div class="card w-100 mb-5 ml-5 p-2 ">
+                <div class="card-body ">
+    
+                  <h5 class="card-title"> KELLOGG'S, EGGO, Biscuit Scramblers, Bacon, Egg & Cheese </h5>
+                  <p class="card-text"> Baked Products</p>
+                  <a href="#"  class="btn btn-outline-dark pr-4 pl-4 pt-2 pb-2 w-100 font-weight-bold fooditem">
+                    <span class="incart">In Cart &#10003</span>
+                    <span class="removec">Remove From Cart &#10007</span>
+                  </a>
+    
+                </div>
+              </div> -->
+            </div>
+            <div class="col-5">
+              <button id="cart-clear" onClick="localStorage.clear(); location.reload();"
+              class="btn btn-outline-light float-right">Clear</button>
+            </div>  
+          </div>
+          <div id="cart" class="" style="margin-right:80px;"> 
           </div>
         </div>
-  
-        <script>
-  
-          function addListItem(id) {
-            console.log(id)
-            document.cookie = id.getAttributeNode("descrip").value;
-            var cart = document.getElementById("cart");
-            var descrip = id.getAttributeNode("descrip").value;
-            var foodgroup = id.getAttributeNode("foodgroup").value;
-  
-            localStorage.setItem(localStorage.length, descrip + ":" + foodgroup);
-            var newItem = document.createElement("div");
-            newItem.innerHTML += "<h2>" + descrip + "</h2> <h3>" + foodgroup + "</h3>";
-            cart.appendChild(newItem);
-          }
-  
-          function displayListItems() {
-            for (i = 0; i < localStorage.length; i++) {
-              var pair = localStorage[i];
-              var split = pair.split(":");
-              var newItem = document.createElement("div");
-              newItem.innerHTML += "<h2>" + split[0] + "</h2> <h3>" + split[1] + "</h3>";
-              cart.appendChild(newItem);
-            }
-          }
-  
-        </script>
       </div>
-      {% for d in data %}
-      <div class="col-6 float-right">
 
-          <div class=" container ">
-      <div class="card w-50 mb-5  ">
-        <div class="card-body ">
+      <div class="col-6 ">
+        {% for d in data %}
+        <div class="pl-5 container ">
+          <div class="card w-100 mb-5 ml-5  pl-5 ">
+            <div class="card-body ">
 
-            <h5 class="card-title" id="{{d['Descrip']}}">{{d["Descrip"]}}</h5>
-            <p class="card-text" id="{{d['Descrip']}}"> {{d["FoodGroup"]}} </p>
+              <h5 class="card-title" id="{{d['Descrip']}}">{{d["Descrip"]}}</h5>
+              <p class="card-text" id="{{d['Descrip']}}"> {{d["FoodGroup"]}} </p>
 
-            <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#{{loop.index}}"  data-whatever="{{loop.index}}">
-              Nutritional Information
-            </button>
-      
-            <div class="modal fade" id="{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-body">
-                    <table class="table">
-                      <thead class="thead-dark">
-                        <tr>
-                          <th scope="col">Nutient</th>
-                          <th scope="col">Nutrient Value</th>
-                          <th scope="col">Nutrient Unit</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% if nutr_list %} {% for nutr in nutr_list %}
-                        <tr>
-                          <th scope="row">{{ nutr[0] }}</th>
-                          <td class="put-data text-center" > {{d[nutr[1]]}} </td>
-                          <td class="text-center">{{ nutr[2] }}</td>
-                        </tr>
-                        {% endfor %} {% endif %}
-                      </tbody>
-                    </table>
-                    
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#{{loop.index}}"  data-whatever="{{loop.index}}">
+                Nutritional Information
+              </button>
+        
+
+              <a href="#" onclick="addListItem(this)" class="btn btn-primary pr-4 pl-4 pt-2 pb-2"
+                descrip="{{d['Descrip']}}" foodgroup="{{d['FoodGroup']}}"
+                style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:white;">
+                Add to Cart
+              </a>
+
+              <div class="modal fade" id="{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-body">
+                      <table class="table">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th scope="col">Nutient</th>
+                            <th scope="col">Nutrient Value</th>
+                            <th scope="col">Nutrient Unit</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% if nutr_list %} {% for nutr in nutr_list %}
+                          <tr>
+                            <th scope="row">{{ nutr[0] }}</th>
+                            <td class="put-data text-center" > {{d[nutr[1]]}} </td>
+                            <td class="text-center">{{ nutr[2] }}</td>
+                          </tr>
+                          {% endfor %} {% endif %}
+                        </tbody>
+                      </table>
+                      
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    </div>
                   </div>
                 </div>
               </div>
+
             </div>
-
-            <a href="#" onclick="addListItem(this)" class="btn btn-primary pr-4 pl-4 pt-2 pb-2"
-              descrip="{{d['Descrip']}}" foodgroup="{{d['FoodGroup']}}"
-              style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:white;">
-              Add to Cart
-            </a>
-
           </div>
         </div>
-
-        </div>
+        {% endfor %}
       </div>
-
-      </div>
-
       <br>
 
-      <!-- <div class="col-4 mb-4">
-          <div class="container ">
-            <div class="card">
-              <img src="{{url_for('static', filename='nutrients.jpg')}}"  class="card-img-top" alt="...">
-              <div class="card-body">
-                <h1 class="card-title"> {{d["Descrip"]}} </h1>
-                <h4 class="card-text">{{d["FoodGroup"]}} </h4>
-              </div>
-            </div>
-        </div>
-      </div> -->
 
-      {% endfor %}
+
     </div>
-    </div>
+
 
     {% endif %} {% if data==[] %}
     <h1 class="text-center">There were no results for your search</h1>
     {% endif %}
 
-
     <br />
     <br />
-
-
-    <br />
-    <br />
+    <br/>
+    <br/>
 
   </div>
+  <script>
+  
+    function addListItem(id) {
+      console.log(id)
+      document.cookie = id.getAttributeNode("descrip").value;
+      var cart = document.getElementById("cart");
+      var descrip = id.getAttributeNode("descrip").value;
+      var foodgroup = id.getAttributeNode("foodgroup").value;
 
+      localStorage.setItem(localStorage.length, descrip + ":" + foodgroup);
+      var newItem = document.createElement("div");
+      newItem.innerHTML += 
+"        <div class=\"card w-100 mb-5 ml-5 p-2 \"><div class=\"card-body\"><h5 class=\"card-title\">" + descrip + "</h5> <p class=\"card-text\">" + foodgroup + "</p><a href=\"#\"  class=\"btn btn-outline-dark pr-4 pl-4 pt-2 pb-2 w-100 font-weight-bold fooditem\"><span class=\"incart\">In Cart &#10003</span><span class=\"removec\">Remove From Cart &#10007</span></a></div></div>";
+      cart.appendChild(newItem);
+    }
+
+    function displayListItems() {
+      for (i = 0; i < localStorage.length; i++) {
+        var pair = localStorage[i];
+        var split = pair.split(":");
+        var newItem = document.createElement("div");
+        newItem.innerHTML += 
+"        <div class=\"card w-100 mb-5 ml-5 p-2 \"><div class=\"card-body\"><h5 class=\"card-title\">" + split[0] + "</h5> <p class=\"card-text\">" + split[1] + "</p><a href=\"#\"  class=\"btn btn-outline-dark pr-4 pl-4 pt-2 pb-2 w-100 font-weight-bold fooditem\"><span class=\"incart\">In Cart &#10003</span><span class=\"removec\">Remove From Cart &#10007</span></a></div></div>";
+        // "<h2>" + split[0] + "</h2> <h3>" + split[1] + "</h3>";
+        cart.appendChild(newItem);
+      }
+    }
+
+  </script>
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
     crossorigin="anonymous"></script>

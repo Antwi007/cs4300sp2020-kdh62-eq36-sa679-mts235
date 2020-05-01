@@ -322,7 +322,7 @@ def search_3():
         random.shuffle(desc_list)
         data = desc_list[:10]
 
-    return render_template('boltc_final.html', name=project_name, netid=net_id, output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list(), allergies=allergy_dict)
+    return render_template('botc_final_final.html', name=project_name, netid=net_id, output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list(), allergies=allergy_dict)
 
 
 def review_filtering(desc, food_items):
@@ -415,7 +415,7 @@ def nutrients_filtering(cat_output, query_nutrients):
             # print(nutrient)
             if nutrient[1] in calorie_level:
                 cal_val = calorie_level[nutrient[1]]*0.25
-                print("Cal val" + str(cal_val))
+                # print("Cal val" + str(cal_val))
             else:
                 cal_val = 0
             if float(food_item[nutrient[1]]) > cal_val:
