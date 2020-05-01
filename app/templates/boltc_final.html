@@ -231,6 +231,8 @@
         <br />
         <br />
 
+
+
         {% if data %}
         <h1 class="text-center">{{output_message}}</h1><br><br>
         <div class="row">
@@ -238,32 +240,61 @@
 
           <!-- <div class="card-columns"> -->
           {% for d in data %}
-          <div class="card w-50 mb-5 mx-auto d-block col-7">
+          <div class="card w-50 mb-5 mx-auto d-block col-8">
             <div class="card-body ">
-              <div class="row">
-                <div class="col-9">
-                  <h5 class="card-title" id="{{d['Descrip']}}">{{d["Descrip"]}}</h5>
-                  <p class="card-text" id="{{d['Descrip']}}"> {{d["FoodGroup"]}} </p>
-                  <div class="dropdown">
-                    <span>Nutritional Information</span>
-                    <div class="dropdown-content">
-                      {% if nutr_list %} {% for nutr in nutr_list %}
-                      <div>{{ nutr[0] }}: {{d[nutr[1]]}}</div>
-                      {% endfor %} {% endif %}
+
+                <h5 class="card-title" id="{{d['Descrip']}}">{{d["Descrip"]}}</h5>
+                <p class="card-text" id="{{d['Descrip']}}"> {{d["FoodGroup"]}} </p>
+
+                  <div class="col-2">
+                    <div class="row">
+                      <div class="col-6">
+                    <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#{{loop.index}}"  data-whatever="{{loop.index}}">
+                      Nutritional Information
+                    </button>
+              
+                    <div class="modal fade" id="{{loop.index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-body">
+                            <table class="table">
+                              <thead class="thead-dark">
+                                <tr>
+                                  <th scope="col">Nutient</th>
+                                  <th scope="col">Nutrient Value</th>
+                                  <th scope="col">Nutrient Unit</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% if nutr_list %} {% for nutr in nutr_list %}
+                                <tr>
+                                  <th scope="row">{{ nutr[0] }}</th>
+                                  <td class="put-data text-center" > {{d[nutr[1]]}} </td>
+                                  <td class="text-center">{{ nutr[2] }}</td>
+                                </tr>
+                                {% endfor %} {% endif %}
+                              </tbody>
+                            </table>
+                            
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-
-                <div>
-                  <div class="col-2">
+                <div class="col-4">
                     <a href="#" onclick="addListItem(this)" class="btn btn-primary pr-4 pl-4 pt-2 pb-2"
                       descrip="{{d['Descrip']}}" foodgroup="{{d['FoodGroup']}}"
-                      style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:white;">Add
-                      to Cart</a>
-                  </div>
+                      style="  background-image: linear-gradient(to right, #FBAE57, #DA554B, #614FAB); border-color:white;">
+                      Add to Cart
+                    </a>
                 </div>
               </div>
-            </div>
+          </div>
+
           </div>
           <br>
 

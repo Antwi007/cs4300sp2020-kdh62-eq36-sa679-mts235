@@ -61,6 +61,16 @@ def allergen_val(allergy_dict):
     return output
 
 
+def intersect_old(str1, list1):
+    str1 = str1.split(",")
+    str1 = [value.lower() for value in str1]
+    list1 = [value.lower() for value in list1]
+    output = [value for value in list1 if value in str1]
+    if len(output) > 0:
+        return True
+    return False
+
+
 def intersect(str1, nutr_out, normal, limit):
     descrip_list = []
     stop_words_1 = stop_words()
@@ -233,15 +243,26 @@ def list_nutrients():
     final_list = []
     prem_list = []
     non_nutrients = ["ID", "FoodGroup", "ShortDescrip", "Descrip",
-                     "CommonName", "MfgName", "ScientificName", "Energy_kcal"]
+                     "CommonName", "MfgName", "ScientificName"]
     for key in nutrients_data[0].keys():
         if key not in non_nutrients:
-            nut_lst = key.split("_")
-            final_list.append((nut_lst[0], key))
+            if key != "Energy_kcal":
+                nut_lst = key.split("_")
+                final_list.append((nut_lst[0], key, nut_lst[1]))
+            else:
+                final_list.append(("Calories", key, "kcal"))
+
     f.close()
     for nutrient in final_list:
         nut = nutrient[1].lower()
         if nut.find("usrda") == -1:
+            nut = nutrient[0].lower()
+            # print("Nut is:" + nut)
+            if nut.find("vit") != -1:
+                vit_index = nut.find("vit")
+                word_1 = nutrient[0]
+                word_1 = "Vitamin " + word_1[(vit_index)+3:]
+                nutrient = (word_1, nutrient[1], nutrient[2])
             prem_list.append(nutrient)
     return prem_list
 
@@ -313,7 +334,7 @@ def review_filtering(desc, food_items):
         for review in item["review"]:
             for actual_review in review:
                 list_of_words = actual_review.split()
-                if intersect(desc, list_of_words):
+                if intersect_old(desc, list_of_words):
                     if item not in final_list:
                         final_list.append(item)
     return final_list
@@ -376,7 +397,7 @@ def nutrients_filtering(cat_output, query_nutrients):
                      'VitC_mg': 75, 'VitE_mg': 15, 'Folate_mcg': 400, 'Niacin_mg': 14,
                      'Riboflavin_mg': 1.1, 'Thiamin_mg': 1.1, 'Calcium_mg': 1000,
                      'Copper_mcg': 900, 'Iron_mg': 18, 'Magnesium_mg': 310,
-                     'Manganese_mg': 1.8, 'Phosphorus_mg': 700, 'Selenium_mcg': 55, 'Zinc_mg': 8}
+                     'Manganese_mg': 1.8, 'Phosphorus_mg': 700, 'Selenium_mcg': 55, 'Zinc_mg': 8, "Energy_kcal": 1000}
 
     nutr_out = []
     nutr_list = []
@@ -392,7 +413,12 @@ def nutrients_filtering(cat_output, query_nutrients):
     for food_item in cat_output:
         for nutrient in nutrition_list:
             # print(nutrient)
-            if float(food_item[nutrient[1]]) > calorie_level[nutrient[1]]*0.25:
+            if nutrient[1] in calorie_level:
+                cal_val = calorie_level[nutrient[1]]*0.25
+                print("Cal val" + str(cal_val))
+            else:
+                cal_val = 0
+            if float(food_item[nutrient[1]]) > cal_val:
                 # isnt this the same as before??
                 # i += 1
                 nutr_out.append(food_item)
