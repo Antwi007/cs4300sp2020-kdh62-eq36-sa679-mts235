@@ -304,7 +304,14 @@ def search_3():
         if query_desc:
             # print("HERE 3")
             # This works only if a user provides a description list
-            desc_filt_list = descrip_filtering(query_desc, nutr_list)
+            if len(query_desc.split()) > 1:
+                desc_filt_list = descrip_filtering(query_desc, nutr_list, True)
+                if len(desc_filt_list) == 0:
+                    desc_filt_list = descrip_filtering(
+                        query_desc, nutr_list, False)
+            else:
+                desc_filt_list = descrip_filtering(
+                    query_desc, nutr_list, False)
             if desc_filt_list == []:
                 desc_filt_list = review_filtering(query_desc, nutr_list)
                 # print("DESC FILT LIST: " + str(len(desc_filt_list)))
@@ -434,7 +441,7 @@ def nutrients_filtering(cat_output, query_nutrients):
     return nutr_out
 
 
-def descrip_filtering(query_desc, nutr_out):
+def descrip_filtering(query_desc, nutr_out, advanced):
     """Return a list of food items based on the nutrient input
     Return type is a list of dictionaries
     """
@@ -447,18 +454,23 @@ def descrip_filtering(query_desc, nutr_out):
     word_tokens = word_tokenize(query_desc)
     word_tokens_1 = [w for w in word_tokens if not w in stop_words_1]
     stem_set = set([ps.stem(word) for word in word_tokens_1])
-
+    stem_length = len(stem_set)
    # Find the intersection between the query description and the food description
     # and if it's greater than 0, then there's a match.
     for food_item in nutr_out:
         # Stem the descriptions in json file
         longd = word_tokenize(food_item['Descrip'].lower())
         set_longd = set([ps.stem(descp) for descp in longd])
-
-        if len(stem_set.intersection(set_longd)) > 0:
-            if food_item not in descrip_list:
-                descrip_list.append(food_item)
-                continue
+        if advanced:
+            if len(stem_set.intersection(set_longd)) == stem_length:
+                if food_item not in descrip_list:
+                    descrip_list.append(food_item)
+                    continue
+        else:
+            if len(stem_set.intersection(set_longd)) > 0:
+                if food_item not in descrip_list:
+                    descrip_list.append(food_item)
+                    continue
 
     return descrip_list
     # long_descrip=set(word_tokenize(food_item['Descrip']))
