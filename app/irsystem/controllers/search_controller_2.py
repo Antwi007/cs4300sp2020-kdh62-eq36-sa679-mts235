@@ -45,20 +45,20 @@ allergy_dict = {
 #       set_longd = set([ps.stem(descp) for descp in longd])
 
 
-def allergen_val(allergy_dict):
+def allergen_val(allergy_dict, allergy):
     output = {}
     f = open('nutrients.json',)
     nutrients_data = json.load(f)
-    for allergy in allergy_dict:
-        ids = []
-        descrip_list = intersect(
-            allergy_dict[allergy][0], nutrients_data, True, 100)
-        # output_allergy =  [desc["Descrip"] for data in output_data]
-        # for food in nutrients_data:
-        #     fointersect(allergy_dict[allergy][0], food):
-        #         ids.append(food["Descrip"])
-        output[allergy] = descrip_list
-    return output
+    # for allergy in allergy_dict:
+    ids = []
+    descrip_list = intersect(
+        allergy_dict[allergy][0], nutrients_data, True, 100)
+    # output_allergy =  [desc["Descrip"] for data in output_data]
+    # for food in nutrients_data:
+    #     fointersect(allergy_dict[allergy][0], food):
+    #         ids.append(food["Descrip"])
+    # output[allergy] = descrip_list
+    return descrip_list
 
 
 def intersect_old(str1, list1):
@@ -100,23 +100,23 @@ def intersect(str1, nutr_out, normal, limit):
     return descrip_list
 
 
-def reverse_allergen(allergy_dict):
+def reverse_allergen(allergy_dict, allergy):
     output = {}
     f = open('nutrients.json',)
     nutrients_data = json.load(f)
-    for allergy in allergy_dict:
-        ids = []
-        num = 0
-        descrip_list = intersect(
-            allergy_dict[allergy][0], nutrients_data, False, 100)
-        # for food in nutrients_data:
 
-        #     if not intersect(allergy_dict[allergy][0], food) and num != 100:
-        #         ids.append(food["Descrip"])
-        #         num += 1
-        output[allergy] = descrip_list
+    ids = []
+    num = 0
+    descrip_list = intersect(
+        allergy_dict[allergy][0], nutrients_data, False, 100)
+    # for food in nutrients_data:
 
-    return output
+    #     if not intersect(allergy_dict[allergy][0], food) and num != 100:
+    #         ids.append(food["Descrip"])
+    #         num += 1
+    # output[allergy] = descrip_list
+
+    return descrip_list
 
 
 def ml_list():
@@ -137,16 +137,19 @@ def ml_list():
 # returns the indices of output_data that satisfy the allergen
 
 
-def bernoulli_nb(allergy_name, output_data, rv_allergens, pos_allergens):
+def bernoulli_nb(allergy_name, output_data):
     """
     Returns the indices of output data that based on the bernoulli naive-bayes algorithm
     won't contain any allergens.
     """
     # breaking some food item descriptions into lactose and non-lactose then noting their classes in seperate arrays with matching indexes
     # allergen is a list of descriptions, for a specified allergy
+
     output_data = [data["Descrip"] for data in output_data]
     # STEPHEN FUNCTION CHANGE
-    allergen, non_allergen = rv_allergens[allergy_name], pos_allergens[allergy_name]
+    allergen, non_allergen = reverse_allergen(
+        allergy_dict, allergy_name), allergen_val(allergy_dict, allergy_name)
+    # allergen, non_allergen = rv_allergens[allergy_name], pos_allergens[allergy_name]
     allergen_classes = [allergy_name for _ in allergen]
     non_allergen_classes = ["Not Allergen" for _ in non_allergen]
     descs = allergen + non_allergen
@@ -267,8 +270,8 @@ def list_nutrients():
     return prem_list
 
 
-rv_allergens, pos_allergens = reverse_allergen(allergy_dict), allergen_val(
-    allergy_dict)
+# rv_allergens, pos_allergens = reverse_allergen(allergy_dict), allergen_val(
+#     allergy_dict)
 
 
 @irsystem.route('/', methods=['GET'])
@@ -280,7 +283,7 @@ def search_3():
     cat_list = request.args.getlist('cat_search')
     allergy_list = request.args.getlist('allergies')
     # if anthing is blank do nothing else put nutrients into list and pass category name with it to processing _data function
-    if not query_desc and not nutr_list and not cat_list:
+    if not query_desc and not nutr_list and not cat_list and not allergy_list:
         data = []
         output_message = ''
     else:
@@ -299,6 +302,7 @@ def search_3():
             nutr_val = []
             nutr_list = category_list
         if query_desc:
+            # print("HERE 3")
             # This works only if a user provides a description list
             desc_filt_list = descrip_filtering(query_desc, nutr_list)
             if desc_filt_list == []:
@@ -306,16 +310,18 @@ def search_3():
                 # print("DESC FILT LIST: " + str(len(desc_filt_list)))
             desc_list = rank_results(desc_filt_list, nutr_val)
         else:
+            # print("HERE 2")
             desc_filt_list = nutr_list
             # rank_Results 2 do later
             desc_list = rank_results(desc_filt_list, nutr_val)
         if desc_list is None:
             desc_list = []
         # print("DESC LIST IS" + str(len(desc_list)))
-        if desc_list:
+        # print(desc_list)
+        if desc_list != []:
+            # print("HERE")
             for allergy in allergy_list:
-                output_indices = bernoulli_nb(
-                    allergy, desc_list, rv_allergens, pos_allergens)
+                output_indices = bernoulli_nb(allergy, desc_list)
                 desc_list = np.array(desc_list)[output_indices]
                 desc_list = np.ndarray.tolist(desc_list)
             # print("ALEERGY LIST IS" + str(len(desc_list)))
