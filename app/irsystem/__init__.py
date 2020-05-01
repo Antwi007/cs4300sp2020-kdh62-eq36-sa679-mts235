@@ -8,3 +8,4 @@ irsystem = Blueprint('irsystem', __name__, url_prefix='/',
 from .controllers.search_controller import *
 from .controllers.search_controller_ml import *
 from .controllers.search_controller_1 import *
+from .controllers.search_controller_2 import *
