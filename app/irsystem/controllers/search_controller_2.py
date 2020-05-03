@@ -283,11 +283,12 @@ def search_3():
     cat_list = request.args.getlist('cat_search')
     allergy_list = request.args.getlist('allergies')
     allergy_list = allergy_filter(allergy_list)
-
-    # if anthing is blank do nothing else put nutrients into list and pass category name with it to processing _data function
+    return_message = " "
+   # if anthing is blank do nothing else put nutrients into list and pass category name with it to processing _data function
     if not query_desc and not nutr_list and not cat_list and not allergy_list:
         data = []
         output_message = ''
+        # return_message = " "
     else:
         nutr_val = []
         for nutr in nutr_list:
@@ -338,8 +339,10 @@ def search_3():
             # print("ALEERGY LIST IS" + str(len(desc_list)))
         random.shuffle(desc_list)
         data = desc_list[:10]
+        if data == []:
+            return_message = "There were no results for your search "
 
-    return render_template('botc_final_final.html', name=project_name, netid=net_id, output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list(), allergies=allergy_dict)
+    return render_template('botc_final_final.html', name=project_name, netid=net_id, output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list(), allergies=allergy_dict, return_msg=return_message)
 
 
 def review_filtering(desc, food_items):
