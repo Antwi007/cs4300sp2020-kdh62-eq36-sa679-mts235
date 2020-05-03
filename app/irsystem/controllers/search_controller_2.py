@@ -282,6 +282,8 @@ def search_3():
     nutr_list = request.args.getlist('nutrients')
     cat_list = request.args.getlist('cat_search')
     allergy_list = request.args.getlist('allergies')
+    allergy_list=allergy_filter(allergy_list)
+    
     # if anthing is blank do nothing else put nutrients into list and pass category name with it to processing _data function
     if not query_desc and not nutr_list and not cat_list and not allergy_list:
         data = []
@@ -290,11 +292,12 @@ def search_3():
         nutr_val = []
         for nutr in nutr_list:
             nutr_val.append(nutr)
-        output_message = "Your search: " + query_desc
+        output_message = "Your searched for: " 
+        
         if cat_list:
             category_list = category_filtering(str(cat_list))
         else:
-            category_list = json.load(open('datasets/nutrients3.json',))
+            category_list = json.load(open('datasets/nutrients6.json',))
         if nutr_val:
             # print("Category List is: " + str(category_list))
             nutr_list = nutrients_filtering(category_list, nutr_val)
@@ -335,7 +338,7 @@ def search_3():
         random.shuffle(desc_list)
         data = desc_list[:10]
 
-    return render_template('botc_final_final.html', name=project_name, netid=net_id, output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list(), allergies=allergy_dict)
+    return render_template('botc_final_final.html', name=project_name, netid=net_id,output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list(), allergies=allergy_dict)
 
 
 def review_filtering(desc, food_items):
@@ -358,7 +361,7 @@ def review_filtering(desc, food_items):
 def category_filtering(query_categories):
     """Filter query categories to include only relevant categories
     """
-    f = open('datasets/nutrients3.json',)
+    f = open('datasets/nutrients6.json',)
     nutrients_data = json.load(f)
     category_list = categ_list()
     split_cat_dict = split_cat(category_list)
@@ -530,6 +533,14 @@ def edit_distance_search(query, msgs):
         output.append((score, list1))
     fin = sorted(output, key=lambda x: x[0])
     return fin[0]
+
+def allergy_filter(allergy_list):
+    output=[]
+    for alley in allergy_list:
+        val=edit_distance_search(alley, allergy_dict.keys())
+        output.append(val)
+    return output
+
 
 
 def rank_results(descript_list, query_nutrients):

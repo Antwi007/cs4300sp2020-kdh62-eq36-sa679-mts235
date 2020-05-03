@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/static/bootstrap.min.css" />
   <link rel="stylesheet" href="/static/main.css" />
 
-  <!-- Bootstrap -->
+  <!-- Bootstrap fin-->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
   <!-- Select2 -->
@@ -57,12 +57,7 @@
 </head>
 
 <body onload="displayListItems()">
-  <div class="container ">
-    <div class="topcorner">
-      <p>Project Name: {{ name }}</p>
-      <p>Student Name: ({{ netid }})</p>
-      <a href="{{ url_for('irsystem.search') }}">Prototype 1</a>
-    </div>
+
     <img src="{{url_for('static', filename='grocery_image.png')}}" class="img-fluid rounded mx-auto d-block pl-4"
       alt="..." style="max-height:200px;">
     <h1 style="font-size: 55px; font-family: Futura; color: #4285f4;" class="text-center text-white">
@@ -190,6 +185,23 @@
 
     {% if data %}
     <h1 class="text-center text-white">{{output_message}}</h1><br><br>
+    <p>
+      <!-- {%if que%} -->
+      <!-- {{que}} -->
+      <!-- {%endif%} -->
+    </p>
+    <p>
+      <!-- {%for nun in nut %} -->
+      <!-- {{nut}} -->
+      
+      <!-- {%endfor%} -->
+    </p>
+    <p>
+      <!-- {%for nan in cat %} -->
+      <!-- {{cat}} -->
+      
+      <!-- {%endfor%} -->
+    </p>
     <div class="row">
       <div class="col-5" style="border-style: solid; border-width: thick; border-color:white;">
         <div class="container p-5">
@@ -330,6 +342,12 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
+    <div class="container ">
+      <div class="">
+        <p>Project Name: {{ name }}</p>
+        <p>Student Name: ({{ netid }})</p>
+        <a href="{{ url_for('irsystem.search') }}">Prototype 1</a>
+      </div>
 </body>
 
 </html>
