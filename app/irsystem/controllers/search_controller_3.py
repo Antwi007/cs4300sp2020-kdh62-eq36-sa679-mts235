@@ -358,7 +358,9 @@ def nutrients_filtering(cat_output, query_nutrients):
 
 
 def descrip_filtering(query_desc, nutr_out):
-
+    """Return a list of food items based on the nutrient input
+    Return type is a list of dictionaries
+    """
     stop_words_1 = stop_words()
     quer_desc = query_desc.lower()
     quer_desc = str(set(quer_desc.split()))
@@ -376,6 +378,7 @@ def descrip_filtering(query_desc, nutr_out):
             # Stem the descriptions in json file
             longd = word_tokenize(food_item['Descrip'].lower())
             set_longd = set([ps.stem(descp) for descp in longd])
+
             if len(stem_set.intersection(set_longd)) > 0:
                 if food_item not in descrip_list:
                     descrip_list.append(food_item)
