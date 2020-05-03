@@ -294,7 +294,7 @@ def search_3():
         if cat_list:
             category_list = category_filtering(str(cat_list))
         else:
-            category_list = json.load(open('datasets/nutrients3.json',))
+            category_list = json.load(open('datasets/nutrients6.json',))
         if nutr_val:
             # print("Category List is: " + str(category_list))
             nutr_list = nutrients_filtering(category_list, nutr_val)
@@ -358,7 +358,7 @@ def review_filtering(desc, food_items):
 def category_filtering(query_categories):
     """Filter query categories to include only relevant categories
     """
-    f = open('datasets/nutrients3.json',)
+    f = open('datasets/nutrients6.json',)
     nutrients_data = json.load(f)
     category_list = categ_list()
     split_cat_dict = split_cat(category_list)
