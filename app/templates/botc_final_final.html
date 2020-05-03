@@ -307,26 +307,35 @@
   <script>
   
     function addListItem(id) {
-      console.log(id)
       document.cookie = id.getAttributeNode("descrip").value;
       var cart = document.getElementById("cart");
       var descrip = id.getAttributeNode("descrip").value;
       var foodgroup = id.getAttributeNode("foodgroup").value;
 
-      localStorage.setItem(localStorage.length, descrip + ":" + foodgroup);
+      localStorage.setItem(descrip + ":" + foodgroup, descrip + ":" + foodgroup);
       var newItem = document.createElement("div");
       newItem.innerHTML += 
-"        <div class=\"card w-100 mb-5 ml-5 p-2 \"><div class=\"card-body\"><h5 class=\"card-title\">" + descrip + "</h5> <p class=\"card-text\">" + foodgroup + "</p><a href=\"#\"  class=\"btn btn-outline-dark pr-4 pl-4 pt-2 pb-2 w-100 font-weight-bold fooditem\"><span class=\"incart\">In Cart &#10003</span><span class=\"removec\">Remove From Cart &#10007</span></a></div></div>";
+"        <div class=\"card w-100 mb-5 ml-5 p-2 \"><div class=\"card-body\"><h5 class=\"card-title\">" + descrip + "</h5> <p class=\"card-text\">" + foodgroup + "</p><a href=\"#\" onclick=\"removeItem(this)\" descrip=\'" + descrip + "\' foodgroup=\'" + foodgroup + "\' class=\"btn btn-outline-dark pr-4 pl-4 pt-2 pb-2 w-100 font-weight-bold fooditem\"><span class=\"incart\">In Cart &#10003</span><span class=\"removec\">Remove From Cart &#10007</span></a></div></div>";
       cart.appendChild(newItem);
+    }
+
+    function removeItem(id) {
+      var descrip = id.getAttributeNode("descrip").value;
+      var foodgroup = id.getAttributeNode("foodgroup").value;
+      var val = descrip + ":" + foodgroup;
+            localStorage.removeItem(val);
+            i--;
+      location.reload();
     }
 
     function displayListItems() {
       for (i = 0; i < localStorage.length; i++) {
-        var pair = localStorage[i];
+        var key = localStorage.key(i);
+        var pair = localStorage[key];
         var split = pair.split(":");
         var newItem = document.createElement("div");
         newItem.innerHTML += 
-"        <div class=\"card w-100 mb-5 ml-5 p-2 \"><div class=\"card-body\"><h5 class=\"card-title\">" + split[0] + "</h5> <p class=\"card-text\">" + split[1] + "</p><a href=\"#\"  class=\"btn btn-outline-dark pr-4 pl-4 pt-2 pb-2 w-100 font-weight-bold fooditem\"><span class=\"incart\">In Cart &#10003</span><span class=\"removec\">Remove From Cart &#10007</span></a></div></div>";
+"        <div class=\"card w-100 mb-5 ml-5 p-2 \"><div class=\"card-body\"><h5 class=\"card-title\">" + split[0] + "</h5> <p class=\"card-text\">" + split[1] + "</p><a href=\"#\" onclick=\"removeItem(this)\" descrip=\'" + split[0] + "\' foodgroup=\'" + split[1] + "\'  class=\"btn btn-outline-dark pr-4 pl-4 pt-2 pb-2 w-100 font-weight-bold fooditem\"><span class=\"incart\">In Cart &#10003</span><span class=\"removec\">Remove From Cart &#10007</span></a></div></div>";
         // "<h2>" + split[0] + "</h2> <h3>" + split[1] + "</h3>";
         cart.appendChild(newItem);
       }
