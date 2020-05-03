@@ -6,7 +6,7 @@ from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
 import re
 import random
-
+from nltk.corpus import wordnet
 
 from sklearn.model_selection import ShuffleSplit
 from sklearn.feature_extraction.text import CountVectorizer
@@ -282,8 +282,8 @@ def search_3():
     nutr_list = request.args.getlist('nutrients')
     cat_list = request.args.getlist('cat_search')
     allergy_list = request.args.getlist('allergies')
-    allergy_list=allergy_filter(allergy_list)
-    
+    allergy_list = allergy_filter(allergy_list)
+
     # if anthing is blank do nothing else put nutrients into list and pass category name with it to processing _data function
     if not query_desc and not nutr_list and not cat_list and not allergy_list:
         data = []
@@ -292,8 +292,8 @@ def search_3():
         nutr_val = []
         for nutr in nutr_list:
             nutr_val.append(nutr)
-        output_message = "Your searched for: " 
-        
+        output_message = "Your searched for: "
+
         if cat_list:
             category_list = category_filtering(str(cat_list))
         else:
@@ -338,7 +338,7 @@ def search_3():
         random.shuffle(desc_list)
         data = desc_list[:10]
 
-    return render_template('botc_final_final.html', name=project_name, netid=net_id,output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list(), allergies=allergy_dict)
+    return render_template('botc_final_final.html', name=project_name, netid=net_id, output_message=output_message, data=data, nutr_list=list_nutrients(), cat_list=categ_list(), allergies=allergy_dict)
 
 
 def review_filtering(desc, food_items):
@@ -474,11 +474,24 @@ def descrip_filtering(query_desc, nutr_out, advanced):
                 if food_item not in descrip_list:
                     descrip_list.append(food_item)
                     continue
+    # Made matching for synonyms less stringent since it's our last resort for matching.
+    # I also realized synonyms is for most english words not food items so it doesn't help that much
+    if len(descrip_list) == 0:
+        stem_set_1 = []
+        for word in stem_set:
+            synonyms = set(create_synonyms(word))
+            stem_set_1 = set([ps.stem(word) for word in synonyms])
+        for food_item in nutr_out:
+            # Stem the descriptions in json file
+            longd = word_tokenize(food_item['Descrip'].lower())
+            set_longd = set([ps.stem(descp) for descp in longd])
+
+            if len(stem_set_1.intersection(set_longd)) > 0:
+                if food_item not in descrip_list:
+                    descrip_list.append(food_item)
+                    continue
 
     return descrip_list
-    # long_descrip=set(word_tokenize(food_item['Descrip']))
-    #   food_item = {"FoodGroup": fgroup,
-    #              "ShortDescrip": food['ShortDescrip'], "Descrip":  food['Descrip'], "MfgName":  food['MfgName']}
 
 
 def curr_insertion_function(message, j):
@@ -534,13 +547,13 @@ def edit_distance_search(query, msgs):
     fin = sorted(output, key=lambda x: x[0])
     return fin[0]
 
+
 def allergy_filter(allergy_list):
-    output=[]
+    output = []
     for alley in allergy_list:
-        val=edit_distance_search(alley, allergy_dict.keys())
+        val = edit_distance_search(alley, allergy_dict.keys())
         output.append(val)
     return output
-
 
 
 def rank_results(descript_list, query_nutrients):
@@ -594,3 +607,12 @@ def rank_results2(query_nutrients):
     nutrients_data = json.load(f)
     ranks = rank_results(nutrients_data, query_nutrients)
     return ranks
+
+
+def create_synonyms(word):
+    synonyms = []
+    for syn in wordnet.synsets(word):
+        for l in syn.lemmas():
+            if l.name() not in synonyms:
+                synonyms.append(l.name())
+    return synonyms
