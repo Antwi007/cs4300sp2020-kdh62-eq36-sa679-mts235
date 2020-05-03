@@ -331,6 +331,7 @@ def search_3():
         if desc_list != []:
             # print("HERE")
             for allergy in allergy_list:
+                allergy = allergy[1]
                 output_indices = bernoulli_nb(allergy, desc_list)
                 desc_list = np.array(desc_list)[output_indices]
                 desc_list = np.ndarray.tolist(desc_list)
@@ -476,7 +477,7 @@ def descrip_filtering(query_desc, nutr_out, advanced):
                     continue
     # Made matching for synonyms less stringent since it's our last resort for matching.
     # I also realized synonyms is for most english words not food items so it doesn't help that much
-    if len(descrip_list) == 0:
+    if len(descrip_list) == 0 and (not advanced):
         stem_set_1 = []
         for word in stem_set:
             synonyms = set(create_synonyms(word))
