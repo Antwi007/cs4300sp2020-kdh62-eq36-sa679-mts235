@@ -364,29 +364,35 @@ def descrip_filtering(query_desc, nutr_out):
     stop_words_1 = stop_words()
     quer_desc = query_desc.lower()
     quer_desc = str(set(quer_desc.split()))
-    descrip_list = []
     # Stemming
     ps = PorterStemmer()
     word_tokens = word_tokenize(query_desc)
     word_tokens_1 = [w for w in word_tokens if not w in stop_words_1]
     stem_set = set([ps.stem(word) for word in word_tokens_1])
 
-   # Find the intersection between the query description and the food description
-    # and if it's greater than 0, then there's a match.
-    for food_item in nutr_out:
-        # Stem the descriptions in json file
-        longd = word_tokenize(food_item['Descrip'].lower())
-        set_longd = set([ps.stem(descp) for descp in longd])
+    def item_filter(stem_list):
+        descrip_list = []
+        # Find the intersection between the query description and the food description
+        # and if it's greater than 0, then there's a match.
+        for food_item in nutr_out:
+            # Stem the descriptions in json file
+            longd = word_tokenize(food_item['Descrip'].lower())
+            set_longd = set([ps.stem(descp) for descp in longd])
 
-        if len(stem_set.intersection(set_longd)) > 0:
-            if food_item not in descrip_list:
-                descrip_list.append(food_item)
-                continue
+            if len(stem_set.intersection(set_longd)) > 0:
+                if food_item not in descrip_list:
+                    descrip_list.append(food_item)
+                    continue
+        return descrip_list
+    descript_list = item_filter(stem_set)
 
-    return descrip_list
-    # long_descrip=set(word_tokenize(food_item['Descrip']))
-    #   food_item = {"FoodGroup": fgroup,
-    #              "ShortDescrip": food['ShortDescrip'], "Descrip":  food['Descrip'], "MfgName":  food['MfgName']}
+    if len(descript_list) == 0:
+        for word in stem_set:
+            synonyms = set(create_synonyms(word))
+            stem_set_1 = set([ps.stem(word) for word in synonyms])
+            descript_list = item_filter(stem_set_1)
+
+    return descript_list
 
 
 def curr_insertion_function(message, j):
@@ -494,3 +500,12 @@ def rank_results2(query_nutrients):
     nutrients_data = json.load(f)
     ranks = rank_results(nutrients_data, query_nutrients)
     return ranks
+
+
+def create_synonyms(word):
+    synonyms = []
+    for syn in wordnet.synsets(word):
+        for l in syn.lemmas():
+            if l.name() not in synonyms:
+                synonyms.append(l.name())
+    return synonyms
